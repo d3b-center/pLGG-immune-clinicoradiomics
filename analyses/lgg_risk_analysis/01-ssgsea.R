@@ -2,39 +2,49 @@
 # on the rnaseq data derived from LGG participant list 
 
 suppressPackageStartupMessages({
+  library(optparse)
   library(tidyverse)
   library(msigdbr)
   library(GSVA)
 })
 
-# define directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
-analysis_dir <- file.path(root_dir, "analyses", "lgg_risk_analysis")
-input_dir <- file.path(analysis_dir, "input")
-
-# output directory
-output_dir <- file.path(analysis_dir, "results")
+# parse arguments
+option_list <- list(
+  make_option(c("--mat"), type = "character",
+              help = "input RNA-seq gene expression matrix (preferably TPM)"),
+  make_option(c("--histology_file"), type = "character",
+              help = "histology file for all OpenPedCan samples (.tsv)"),
+  make_option(c("--risk_file"), type = "character", default = NULL,
+              help = "file with risk scores"),
+  make_option(c("--gtf_file"), type = "character", default = NULL,
+              help = "gencode GTF file"),
+  make_option(c("--output_dir"), type = "character",
+              help = "output directory")
+)
+opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
+mat <- opt$mat
+histology_file <- opt$histology_file
+risk_file <- opt$risk_file
+gtf_file <- opt$gtf_file
+output_dir <- opt$output_dir
 dir.create(output_dir, showWarnings = F, recursive = T)
 
 # read histology file 
-histology_file <- file.path(data_dir, "20230826_release.annotated_histologies.tsv") %>%
-  read_tsv() 
+histology_file <- read_tsv(histology_file)
 
 # read imaging risk file and pull corresponding bs identifiers
-lgg_clusters <- readxl::read_xlsx(file.path(input_dir, "RiskScores_Grouping.xlsx"))
+lgg_clusters <- readxl::read_xlsx(risk_file)
 histology_file <- histology_file %>%
   filter(cohort_participant_id %in% lgg_clusters$SubjectID,
          experimental_strategy == "RNA-Seq") 
 
 # read tpm data
-tpm_file <- file.path(data_dir, "20230826_release-gene-expression-rsem-tpm.collapsed.rds")
-tpm_mat <- readRDS(tpm_file)
+tpm_mat <- readRDS(mat)
 tpm_mat <- tpm_mat %>%
   dplyr::select(any_of(histology_file$Kids_First_Biospecimen_ID))
 
 # read gtf and filter to protein coding 
-gencode_gtf <- rtracklayer::import(con = file.path(data_dir, "gencode.v39.primary_assembly.annotation.gtf.gz"))
+gencode_gtf <- rtracklayer::import(con = gtf_file)
 gencode_gtf <- as.data.frame(gencode_gtf)
 gencode_gtf <- gencode_gtf %>%
   dplyr::select(gene_id, gene_name, gene_type) %>%

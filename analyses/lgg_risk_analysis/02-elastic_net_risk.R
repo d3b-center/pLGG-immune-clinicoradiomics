@@ -1,4 +1,5 @@
 suppressPackageStartupMessages({
+  library(optparse)
   library(data.table)
   library(dplyr)
   library(plyr)
@@ -14,28 +15,35 @@ suppressPackageStartupMessages({
   library(MLmetrics)
 })
 
-# define directories
-root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
-analysis_dir <- file.path(root_dir, "analyses", "lgg_risk_analysis")
-input_dir <- file.path(analysis_dir, "input")
 
-# output directory
-output_dir <- file.path(analysis_dir, "results")
+# parse arguments
+option_list <- list(
+  make_option(c("--histology_file"), type = "character",
+              help = "histology file for all OpenPedCan samples (.tsv)"),
+  make_option(c("--risk_file"), type = "character", default = NULL,
+              help = "file with risk scores"),
+  make_option(c("--output_dir"), type = "character",
+              help = "output directory"),
+  make_option(c("--plots_dir"), type = "character",
+              help = "plots directory")
+)
+opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
+histology_file <- opt$histology_file
+risk_file <- opt$risk_file
+output_dir <- opt$output_dir
 dir.create(output_dir, showWarnings = F, recursive = T)
-
-plots_dir <- file.path(analysis_dir, "plots")
+plots_dir <- opt$plots_dir
 dir.create(plots_dir, showWarnings = F, recursive = T)
 
 # read histology file 
-histology_file <- file.path(data_dir, "20230826_release.annotated_histologies.tsv") %>%
+histology_file <- histology_file %>%
   fread() 
 
 # read pathways file
 lgg_pathways <- readRDS(file.path(output_dir, 'ssgsea_matrix.rds'))
 
 # read imaging risk file and pull corresponding bs identifiers
-lgg_clusters <- readxl::read_xlsx(file.path(input_dir, "RiskScores_Grouping.xlsx"))
+lgg_clusters <- readxl::read_xlsx(risk_file)
 histology_file <- histology_file %>%
   filter(cohort_participant_id %in% lgg_clusters$SubjectID,
          experimental_strategy == "RNA-Seq") %>%
