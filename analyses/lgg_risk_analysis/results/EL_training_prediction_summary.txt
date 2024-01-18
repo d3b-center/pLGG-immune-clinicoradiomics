@@ -1,0 +1,2 @@
+Scatter Index	Rsquare
+8.6	0.884088778901331

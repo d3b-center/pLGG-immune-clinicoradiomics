@@ -1,0 +1,20 @@
+                    
+                       1   2   3
+  GNG, KIAA1549-BRAF   2   3   4
+  GNG, wildtype        3   3  18
+  LGG_CDKN2A/B        12   4   3
+  LGG_IDH              5   1   5
+  LGG_NF1             10   7   5
+  LGG_RTK             21  20  18
+  LGG, BRAF V600E     25  18  17
+  LGG, KIAA1549-BRAF 102  61  20
+  LGG, MYB/MYBL1       0   2   3
+  LGG, other MAPK     11   9   8
+  LGG, wildtype        8  43  29
+  SEGA, wildtype       6   0  10
+
+	Pearson's Chi-squared test
+
+data:  table(anno_file$molecular_subtype, anno_file$cluster_assigned)
+X-squared = 115.18, df = 22, p-value = 1.298e-14
+
