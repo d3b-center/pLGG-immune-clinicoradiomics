@@ -72,16 +72,5 @@ deconv_output <- deconv_output %>%
                                   "ly Endothelial cells", "Endothelial cells", "Neurons")) %>%
   column_to_rownames("cell_type") 
 
-# # convert to long format
-# deconv_output <- deconv_output %>%
-#   as.data.frame() %>%
-#   gather(Kids_First_Biospecimen_ID, fraction, -c(cell_type)) %>%
-#   as.data.frame()
-# 
-# # merge output with clinical data
-# full_output <- histology_df %>%
-#   inner_join(deconv_output, by = "Kids_First_Biospecimen_ID") %>%
-#   mutate(method = "xcell")
-
 # save xcell scores
 saveRDS(deconv_output, file = file.path(output_dir, "xcell_scores.rds"))
