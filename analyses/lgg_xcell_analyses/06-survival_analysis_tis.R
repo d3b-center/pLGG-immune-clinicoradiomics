@@ -33,7 +33,7 @@ tis_scores <- tis_scores %>%
 
 # map cohort participant id to biospecimen from histology
 histology_df <-
-  file.path(data_dir, '20230826_release.annotated_histologies.tsv') %>% fread()
+  file.path(data_dir, '20230826_release.annotated_histologies_subset.tsv') %>% fread()
 histology_df <- histology_df %>%
   dplyr::select(
     Kids_First_Participant_ID,

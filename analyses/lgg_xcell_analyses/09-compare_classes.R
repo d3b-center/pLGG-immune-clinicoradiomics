@@ -15,7 +15,7 @@ imaging_clusters <- file.path(data_dir, "ImagingClusterAssignment_Aug2023.xlsx")
   readxl::read_xlsx()
 
 # map cohort participant id to biospecimen from histology
-histology_df <- file.path(data_dir, "20230826_release.annotated_histologies.tsv") %>% read_tsv()
+histology_df <- file.path(data_dir, "20230826_release.annotated_histologies_subset.tsv") %>% read_tsv()
 histology_df <- histology_df %>%
   dplyr::select(Kids_First_Biospecimen_ID, cohort_participant_id) 
 imaging_clusters <- imaging_clusters %>%

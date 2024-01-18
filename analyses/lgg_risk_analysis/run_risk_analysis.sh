@@ -12,8 +12,8 @@ cd "$script_directory" || exit
 
 # define directory and data files
 data_dir="../../data"
-tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed.rds"
-histology_file="${data_dir}/20230826_release.annotated_histologies.tsv"
+tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed_subset.rds"
+histology_file="${data_dir}/20230826_release.annotated_histologies_subset.tsv"
 gtf_file="${data_dir}/gencode.v39.primary_assembly.annotation.gtf.gz"
 
 # script to run ssgsea

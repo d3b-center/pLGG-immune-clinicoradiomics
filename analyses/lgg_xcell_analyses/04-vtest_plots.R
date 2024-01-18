@@ -56,28 +56,6 @@ for(i in 1:length(n_clusters)){
 }
 dev.off()
 
-# # circular bar plot (upregulated)
-# for(i in 1:length(n_clusters)){
-#   dat <- vtest_score_top5 %>%
-#     filter(cluster == n_clusters[i])
-#   pdf(file = file.path(plots_dir, paste0("cluster", n_clusters[i], "_vtest_up.pdf")))
-#   p <- ggplot(dat, aes(x = cell_type, y = v_score, fill = cell_type)) +
-#     geom_col(position = "dodge") +
-#     coord_polar() + 
-#     xlab("Cell Type") + ylab("V-test score") +
-#     labs(fill = "Cell Type") + 
-#     theme_bw() +
-#     theme(axis.text.x = element_blank(), 
-#           axis.text = element_text(size = 12),
-#           legend.position = "right",
-#           legend.text = element_text(size = 12),
-#           panel.grid.major = element_line(colour = "darkgray"),
-#           panel.grid.minor = element_line(colour = "darkgray")) +
-#   ggtitle(paste0("Cluster", i))
-#   print(p)
-#   dev.off()
-# }
-
 # get bottom 5 cell types
 vtest_score_bottom5 <- vtest_score %>%
   arrange(cluster, desc(v_score)) %>%
@@ -99,33 +77,3 @@ for(i in 1:length(n_clusters)){
   radar_plot_per_cluster(dat = dat_bottom5, colors_border = colors_border[i], colors_in = colors_in[i], title = paste0("Cluster", i))
 }
 dev.off()
-
-# # circular bar plot (downregulated)
-# for(i in 1:length(n_clusters)){
-#   dat <- vtest_score_bottom5 %>%
-#     filter(cluster == n_clusters[i])
-#   pdf(file = file.path(plots_dir, paste0("cluster", n_clusters[i], "_vtest_down.pdf")))
-#   p <- ggplot(dat, aes(x = cell_type, y = v_score, fill = cell_type)) +
-#     geom_col(position = "dodge") +
-#     coord_polar() + 
-#     xlab("Cell Type") + ylab("V-test score") +
-#     labs(fill = "Cell Type") + 
-#     theme_bw() +
-#     theme(axis.text.x = element_blank(), 
-#           axis.text = element_text(size = 12),
-#           legend.position = "right",
-#           legend.text = element_text(size = 12),
-#           panel.grid.major = element_line(colour = "darkgray"),
-#           panel.grid.minor = element_line(colour = "darkgray")) +
-#     ggtitle(paste0("Cluster", i))
-#   print(p)
-#   dev.off()
-# }
-
-# output plot
-# pdf(file = file.path(plots_dir, "vtest_bubble_plot.pdf"), onefile = TRUE)
-# print(bubble_plot(x = vtest_score_top5, topN = 5, 
-#                   title = paste0("Top ", 5, " cell types")))
-# print(bubble_plot(x = vtest_score_bottom5, topN = 5, 
-#                   title = paste0("Bottom ", 5, " cell types")))
-# dev.off()

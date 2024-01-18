@@ -51,61 +51,65 @@ source(file.path(ClusTarIDseq_module, "compute_vtest.R"))
 # read histology
 histology_df <- read_tsv(histology)
 
-# # run lspline clustering and return the result with 
-# lspline_clustering(expr_mat = mat, 
-#                    hist_file = histology,
-#                    filter_expr = FALSE, 
-#                    protein_coding_only = FALSE,
-#                    feature_selection = "variance",
-#                    var_prop = 100, 
-#                    transformation_type = "none", 
-#                    max_k = 10, 
-#                    coef_cutoff = 0.1, 
-#                    min_cluster_size_prop = 0.1, max_cluster_size_prop = 0.5, 
-#                    compute_all_equal = TRUE,
-#                    output_dir = file.path(output_dir, "ccp_output"))
-# 
-# # run dbscan
-# dbscan_clustering(expr_mat = mat, 
-#                   filter_expr = FALSE,
-#                   protein_coding_only = FALSE,
-#                   feature_selection = "variance",
-#                   var_prop = 100, 
-#                   transformation_type = "none",
-#                   minpts_val = NULL, 
-#                   output_dir = file.path(output_dir, "dbscan_output"))
-# 
-# # run intNMF
-# intnmf_clustering(expr_mat = mat, 
-#                   filter_expr = FALSE, 
-#                   protein_coding_only = FALSE, 
-#                   feature_selection = "variance",
-#                   var_prop = 100,
-#                   transformation_type = "none",
-#                   max_k = 10,
-#                   output_dir = file.path(output_dir, "intnmf_output"))
-# 
-# # run NB.mclust is not applicable because it works with integers and 
-# # it will convert all values to 0 in this case
-# final_composite_score(expr_mat = mat, 
-#                       hist_file = histology, 
-#                       filter_expr = FALSE, 
-#                       protein_coding_only = FALSE, 
-#                       feature_selection = "variance",
-#                       var_prop = 100,
-#                       transformation_type = "none",
-#                       ccp_output = file.path(output_dir, "ccp_output", "ccp_optimal_clusters.tsv"), 
-#                       nbmclust_output = NULL, 
-#                       dbscan_output = file.path(output_dir, "dbscan_output", "dbscan_optimal_clusters.tsv"),
-#                       intnmf_output = file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv"),
-#                       output_dir = file.path(output_dir, "final_score"))
+# run lspline clustering and return the result with
+final_output <- file.path(output_dir, "final_score", "final_clustering_output.tsv")
+if(!file.exists(final_output)){
+  lspline_clustering(expr_mat = mat,
+                     hist_file = histology,
+                     filter_expr = FALSE,
+                     protein_coding_only = FALSE,
+                     feature_selection = "variance",
+                     var_prop = 100,
+                     transformation_type = "none",
+                     max_k = 10,
+                     coef_cutoff = 0.1,
+                     min_cluster_size_prop = 0.1, max_cluster_size_prop = 0.5,
+                     compute_all_equal = TRUE,
+                     output_dir = file.path(output_dir, "ccp_output"))
+  
+  # run dbscan
+  dbscan_clustering(expr_mat = mat,
+                    filter_expr = FALSE,
+                    protein_coding_only = FALSE,
+                    feature_selection = "variance",
+                    var_prop = 100,
+                    transformation_type = "none",
+                    minpts_val = NULL,
+                    output_dir = file.path(output_dir, "dbscan_output"))
+  
+  # run intNMF
+  intnmf_clustering(expr_mat = mat,
+                    filter_expr = FALSE,
+                    protein_coding_only = FALSE,
+                    feature_selection = "variance",
+                    var_prop = 100,
+                    transformation_type = "none",
+                    max_k = 10,
+                    output_dir = file.path(output_dir, "intnmf_output"))
+  
+  # run NB.mclust is not applicable because it works with integers and
+  # it will convert all values to 0 in this case
+  final_composite_score(expr_mat = mat,
+                        hist_file = histology,
+                        filter_expr = FALSE,
+                        protein_coding_only = FALSE,
+                        feature_selection = "variance",
+                        var_prop = 100,
+                        transformation_type = "none",
+                        ccp_output = file.path(output_dir, "ccp_output", "ccp_optimal_clusters.tsv"),
+                        nbmclust_output = NULL,
+                        dbscan_output = file.path(output_dir, "dbscan_output", "dbscan_optimal_clusters.tsv"),
+                        intnmf_output = file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv"),
+                        output_dir = file.path(output_dir, "final_score"))
+} else {
+  # read in results file 
+  clustering_method <- final_output %>%
+    read_tsv() %>%
+    filter(rank == 1) %>%
+    pull(clustering_method)
+}
 
-# read in results file 
-clustering_method <- file.path(output_dir, "final_score", "final_clustering_output.tsv") %>%
-  read_tsv() %>%
-  filter(rank == 1) %>%
-  pull(clustering_method)
-
+# pull output associated with clustering method of choice
 if(clustering_method == "IntNMF"){
   final_output <- read_tsv(file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv"))
 } else if(clustering_method == "dbscan") {
