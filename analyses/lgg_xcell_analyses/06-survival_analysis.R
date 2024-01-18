@@ -27,7 +27,7 @@ xcell_clusters <-
 
 # map cohort participant id to biospecimen from histology
 histology_df <-
-  file.path(data_dir, "20230826_release.annotated_histologies.tsv") %>% read_tsv()
+  file.path(data_dir, "20230826_release.annotated_histologies_subset.tsv") %>% read_tsv()
 histology_df <- histology_df %>%
   dplyr::select(
     Kids_First_Participant_ID,

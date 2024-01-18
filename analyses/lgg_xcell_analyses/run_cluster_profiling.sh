@@ -12,9 +12,9 @@ cd "$script_directory" || exit
 
 # Define directory and input files
 data_dir="../../data"
-count_file="${data_dir}/20230826_release-gene-counts-rsem-expected_count.collapsed.rds"
-tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed.rds"
-histology_file="${data_dir}/20230826_release.annotated_histologies.tsv"
+count_file="${data_dir}/20230826_release-gene-counts-rsem-expected_count.collapsed_subset.rds"
+tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed_subset.rds"
+histology_file="${data_dir}/20230826_release.annotated_histologies_subset.tsv"
 tis_file="${data_dir}/tumor_inflammation_signatures.txt"
 
 # script to run xcell on histology of interest
