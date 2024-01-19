@@ -78,5 +78,3 @@ Rscript --vanilla 08-immuneSig_db_gsva.R \
 --output_dir "results/gsva_analysis" \
 --plots_dir "plots/gsva_analysis" 
 
-# Compare imaging clusters with xCell-derived clusters
-Rscript --vanilla 09-compare_classes.R
