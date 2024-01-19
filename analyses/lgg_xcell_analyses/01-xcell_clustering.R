@@ -36,17 +36,17 @@ dir.create(vtest_output_dir, recursive = TRUE, showWarnings = F)
 # directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
 
-# source functions from ClusTarIDseq
-ClusTarIDseq_module <- file.path(root_dir, "analyses", "ClusTarIDseq")
-source(file.path(ClusTarIDseq_module, "UQ.R"))
-source(file.path(ClusTarIDseq_module, "run_ccp.R"))
-source(file.path(ClusTarIDseq_module, "get_cdf_datapoints.R"))
-source(file.path(ClusTarIDseq_module, "lspline_clustering.R"))
-source(file.path(ClusTarIDseq_module, "dbscan_clustering.R"))
-source(file.path(ClusTarIDseq_module, "nbmclust_clustering.R"))
-source(file.path(ClusTarIDseq_module, "intnmf_clustering.R"))
-source(file.path(ClusTarIDseq_module, "final_composite_score.R"))
-source(file.path(ClusTarIDseq_module, "compute_vtest.R"))
+# source functions for comparative clustering
+utils_dir <- file.path(root_dir, "analyses", "lgg_xcell_analyses", "utils")
+source(file.path(utils_dir, "UQ.R"))
+source(file.path(utils_dir, "run_ccp.R"))
+source(file.path(utils_dir, "get_cdf_datapoints.R"))
+source(file.path(utils_dir, "lspline_clustering.R"))
+source(file.path(utils_dir, "dbscan_clustering.R"))
+source(file.path(utils_dir, "nbmclust_clustering.R"))
+source(file.path(utils_dir, "intnmf_clustering.R"))
+source(file.path(utils_dir, "final_composite_score.R"))
+source(file.path(utils_dir, "compute_vtest.R"))
 
 # read histology
 histology_df <- read_tsv(histology)

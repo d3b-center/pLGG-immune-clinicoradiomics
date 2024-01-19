@@ -438,23 +438,3 @@ Heatmap for the top 50 differentially expressed pathways:
 plots/gsva_analysis
 └── gsva_heatmap.pdf
 ```
-
-### 9. Compare clusters
-
-`09-compare_classes.R`: Script to compare imaging-derived clusters and xCell-derived clusters.
-
-#### Run script
-
-```
-Rscript --vanilla 09-compare_classes.R`
-``` 
-
-#### Output
-
-Adjusted Rand Index:
-
-```
-results
-└── adjusted_rand_index.tsv
-```
-
