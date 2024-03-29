@@ -24,27 +24,36 @@ run_ccp <- function(expr_mat, algorithm = c("hc", "pam", "km"), distance = c("pe
   # create directory
   dir.create(ccp_dir, showWarnings = F, recursive = T)
 
+  # set seed for reproducibility
+  set.seed(100)
+  
   # run ccp
-  res_ccp <- invisible(ConsensusClusterPlus::ConsensusClusterPlus(
-    d = as.matrix(expr_mat),
-    clusterAlg = algorithm,
-    finalLinkage = "average",
-    distance = distance,
-    plot = "pdf",
-    writeTable = FALSE,
-    reps = 50,
-    maxK = max_k,
-    pItem = 0.8,
-    title = file.path(ccp_dir),
-    seed = 100
-  ))
-
-  # rename consensus output
-  new_name <- gsub(".rds", ".pdf", output_file)
-  old_name <- file.path(ccp_dir, "consensus.pdf")
-  file.rename(from = old_name, to = new_name)
-
-  # save ccp output
-  saveRDS(res_ccp, file = output_file)
+  if(!file.exists(output_file)){
+    res_ccp <- invisible(ConsensusClusterPlus::ConsensusClusterPlus(
+      d = as.matrix(expr_mat),
+      clusterAlg = algorithm,
+      finalLinkage = "average",
+      distance = distance,
+      plot = "pdf",
+      writeTable = FALSE,
+      reps = 50,
+      maxK = max_k,
+      pItem = 0.8,
+      title = file.path(ccp_dir),
+      seed = 100
+    ))
+    
+    # rename consensus output
+    new_name <- gsub(".rds", ".pdf", output_file)
+    old_name <- file.path(ccp_dir, "consensus.pdf")
+    file.rename(from = old_name, to = new_name)
+    
+    # save ccp output
+    saveRDS(res_ccp, file = output_file)
+  } else {
+    print("File exists")
+    res_ccp <- readRDS(file = output_file)
+  }
+  
   return(res_ccp)
 }

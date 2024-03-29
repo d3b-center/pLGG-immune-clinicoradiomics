@@ -10,6 +10,10 @@
 #' @export
 
 get_cdf_datapoints <- function(ml, breaks = 100) {
+  
+  # set seed for reproducibility
+  set.seed(100)
+  
   k <- length(ml)
   this_colors <- rainbow(k - 1)
   areaK <- c()

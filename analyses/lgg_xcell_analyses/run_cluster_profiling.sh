@@ -15,6 +15,7 @@ data_dir="../../data"
 count_file="${data_dir}/20230826_release-gene-counts-rsem-expected_count.collapsed_subset.rds"
 tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed_subset.rds"
 histology_file="${data_dir}/20230826_release.annotated_histologies_subset.tsv"
+tmb_file="${data_dir}/snv-mutation-tmb-coding.tsv"
 tis_file="${data_dir}/tumor_inflammation_signatures.txt"
 
 # script to run xcell on histology of interest
@@ -43,6 +44,7 @@ Rscript --vanilla 02-xcell_heatmap.R \
 Rscript --vanilla 03-xcell_cluster_analysis.R \
 --xcell_file "results/xcell_output/xcell_score_cluster.tsv" \
 --histology $histology_file \
+--tmb_file $tmb_file \
 --output_dir "results/xcell_cluster_analysis" \
 --plots_dir "plots/xcell_cluster_analysis"
 

@@ -1,4 +1,3 @@
-
 ## Author: Komal S. Rathi, Adam Kraya
  
 ### Purpose
@@ -7,9 +6,17 @@ Preliminary analysis for immune profiles of low-grade gliomas. Total number of R
 
  ### Data version
 
-Latest data release: [Release 20230826](https://cavatica.sbgenomics.com/u/d3b-bixu-ops/monthly-release-data/files/#q?path=20230826_release)
+Data release: [Release 20230826](https://cavatica.sbgenomics.com/u/d3b-bixu-ops/monthly-release-data/files/#q?path=20230826_release)
 
-Latest imaging clusters: `ImagingClusterAssignment_Aug2023.xlsx`
+Imaging clusters: `ImagingClusterAssignment_Aug2023.xlsx`
+
+### Run Analysis
+
+Full analyses can be run using the following bash script:
+
+```
+bash run_cluster_profiling.sh
+```
 
 ### 0. xCell-derived immune scores
 
@@ -91,6 +98,7 @@ feature_selection = "variance"
 var_prop = 100
 transformation_type = "none" 
 max_k = 10
+minpts_val = 20
 ```
 
 #### Output
@@ -103,18 +111,24 @@ results/clustering
 │ ├── ccp_optimal_clusters.tsv
 │ ├── {hc, km, pam}_{binary, canberra, euclidean, maximum, pearson, spearman}_100.pdf
 │ └── {hc, km, pam}_{binary, canberra, euclidean, maximum, pearson, spearman}_100.rds
-├── dbscan_output
-│ ├── KNNdistplot_output.pdf
-│ ├── cluster_plot.pdf
-│ └── dbscan_optimal_clusters.tsv
-├── final_score
-│ └── final_clustering_output.tsv # tsv file with ranks assigned to each evaluated method
-└── intnmf_output
-    ├── intnmf_consensus_plot.pdf
-    ├── intnmf_fit.rds
-    ├── intnmf_optimal_clusters.tsv
-    ├── intnmf_optk.rds
-    └── intnmf_silhouette_plot.pdf
+├── hdbscan_output
+│   ├── hdbscan_optimal_clusters.tsv
+│   └── hdbscan_plot.pdf
+├── intnmf_output
+│   ├── intnmf_best_fit.rds
+│   ├── intnmf_clusterstats.tsv
+│   ├── intnmf_consensus_plot.pdf
+│   ├── intnmf_fit_all.rds
+│   ├── intnmf_optimal_clusters.tsv
+│   └── intnmf_silhouette_plot.pdf
+├── mclust_output
+|   ├── mclust_bic_plot.pdf
+|   ├── mclust_icl_plot.pdf
+|   ├── mclust_icl_summary.rds
+|   ├── mclust_optimal_clusters.tsv
+|   └── mclust_summary.rds
+└── final_score
+    └── final_clustering_output.tsv # tsv file with ranks assigned to each evaluated method
 ```
 
 - xCell-derived clusters are mapped back to xCell scores + clinical variables like `molecular_subtype` for downstream analyses and written to the following file:
@@ -176,6 +190,9 @@ Options:
   --histology=HISTOLOGY
     histology file (.tsv)
 
+  --tmb_file=TMB_FILE
+    TMB file (.tsv)
+
   --output_dir=OUTPUT_DIR
     output directory to write files
 
@@ -192,6 +209,7 @@ Options:
 
 ```
 results/xcell_cluster_analysis
+├── poisson_glm_summary.txt
 └── xcell_clusters_vs_subtype_chisquare.txt
 ```
 
@@ -200,6 +218,8 @@ results/xcell_cluster_analysis
 
 ```
 plots/xcell_cluster_analysis
+├── coranalysis.pdf
+├── poisson_glm_summary.pdf
 ├── xcell_clusters_vs_subtype_balloonplot.pdf
 ├── xcell_clusters_vs_subtype_corrplot.pdf
 └── xcell_clusters_vs_tmb.pdf 
@@ -228,18 +248,9 @@ Options:
 #### Output
 
 - Radar plots for top 5 and bottom 5 features per cluster.
-- Circular barplots for top 5 and bottom 5 features per cluster.
-- Bubble plots for top 5 and bottom 5 features per cluster. 
 
 ```
 plots/vtest_analysis
-├── cluster1_vtest_down.pdf
-├── cluster1_vtest_up.pdf
-├── cluster2_vtest_down.pdf
-├── cluster2_vtest_up.pdf
-├── cluster3_vtest_down.pdf
-├── cluster3_vtest_up.pdf
-├── vtest_bubble_plot.pdf
 ├── vtest_down_per_cluster.pdf
 └── vtest_up_per_cluster.pdf
 ```
@@ -438,3 +449,23 @@ Heatmap for the top 50 differentially expressed pathways:
 plots/gsva_analysis
 └── gsva_heatmap.pdf
 ```
+
+### 9. Compare clusters
+
+`09-compare_classes.R`: Script to compare imaging-derived clusters and xCell-derived clusters.
+
+#### Run script
+
+```
+Rscript --vanilla 09-compare_classes.R`
+``` 
+
+#### Output
+
+Adjusted Rand Index:
+
+```
+results
+└── adjusted_rand_index.tsv
+```
+

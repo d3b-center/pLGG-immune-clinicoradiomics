@@ -1,6 +1,4 @@
-# function to compute v.test
-
-#' Function: Compute v.test for each feature across clusters
+#' function to compute v-test for each feature across clusters
 #'
 #' @author Komal S. Rathi
 #'
@@ -12,7 +10,7 @@
 #'
 #' @export
 
-compute.v.test <- function(x, clustering_col) {
+compute_vtest <- function(x, clustering_col) {
   # get unique clusters i.e. 1-n clusters
   clusters <- unique(x[[clustering_col]])
 
@@ -23,10 +21,10 @@ compute.v.test <- function(x, clustering_col) {
     y <- x %>%
       filter(get(clustering_col) == clusters[i])
 
-    # mean feature value per cluster
+    # mean feature expression per cluster
     mean.feature.cluster <- unique(y$cluster_feature_mean_score)
 
-    # mean feature value (i.e. global mean)
+    # mean feature expression (i.e. global mean)
     mean.feature <- unique(y$feature_mean_score)
 
     # calculate numerator
@@ -38,7 +36,7 @@ compute.v.test <- function(x, clustering_col) {
     # cluster sample size
     ng <- nrow(y)
 
-    # variance of feature value (i.e. global variance)
+    # variance of feature values (i.e. global variance)
     var.feature <- unique(x$feature_variance)
 
     # calculate denominator

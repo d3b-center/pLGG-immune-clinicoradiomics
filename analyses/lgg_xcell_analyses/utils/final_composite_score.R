@@ -15,7 +15,7 @@
 #' @param transformation_type transformation method
 #' @param ccp_output path to top-ranking result from CCP
 #' @param nbmclust_output path to NB.MClust chosen clusters
-#' @param dbscan_output path to DBSCAN chosen clusters
+#' @param hdbscan_output path to hdbscan chosen clusters
 #' @param intnmf_output path to IntNMF chosen clusters
 #' @param output_dir output directory to write out output
 #'
@@ -36,8 +36,8 @@ final_composite_score <- function(expr_mat, hist_file,
                                   filter_expr = TRUE, dispersion_percentile_val = 0.2,
                                   protein_coding_only = TRUE, gencode_version = 27,
                                   feature_selection = c("variance", "dip.test"),
-                                  var_prop = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2"),
-                                  ccp_output, nbmclust_output = NULL, dbscan_output, intnmf_output,
+                                  var_prop = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2", "rank"),
+                                  ccp_output, nbmclust_output = NULL, mclust_output, hdbscan_output, intnmf_output = NULL,
                                   output_dir) {
   # create output directory
   dir.create(output_dir, recursive = T, showWarnings = F)
@@ -95,7 +95,7 @@ final_composite_score <- function(expr_mat, hist_file,
   # transform input matrix
   if (transformation_type == "vst") {
     # transform using vst
-    expr_mat <- DESeq2::varianceStabilizingTransformation(round(as.matrix(expr_mat + 1)), blind = TRUE, fitType = "parametric")
+    expr_mat <- DESeq2::varianceStabilizingTransformation(round(as.matrix(expr_mat)), blind = TRUE, fitType = "parametric")
     expr_mat <- as.data.frame(expr_mat)
   } else if (transformation_type == "log2") {
     # log-transform
@@ -109,6 +109,8 @@ final_composite_score <- function(expr_mat, hist_file,
     y <- edgeR::DGEList(counts = expr_mat)
     y <- edgeR::calcNormFactors(object = y, method = "TMM")
     expr_mat <- as.data.frame(edgeR::cpm(y))
+  } else if(transformation_type == "rank") {
+    expr_mat <- datawizard::ranktransform(expr_mat %>% as.data.frame())
   } else if (transformation_type == "none") {
     # do nothing
   }
@@ -120,8 +122,8 @@ final_composite_score <- function(expr_mat, hist_file,
     stopifnot(var_prop <= 100)
     print(paste("subset to", var_prop, "%", "variable features"))
     n <- round(var_prop / 100 * nrow(expr_mat))
-    mads <- apply(expr_mat, 1, mad)
-    expr_mat <- expr_mat[rev(order(mads))[1:n], ]
+    vars <- apply(expr_mat, 1, var)
+    expr_mat <- expr_mat[rev(order(vars))[1:n], ]
   } else if (feature_selection == "dip.test") {
     # dip.test to filter features
     expr_mat <- perform_diptest(count_matrix = expr_mat, matrix_type = "normalized_count", normalization_method = "none", filter_low_expr = FALSE)
@@ -129,26 +131,31 @@ final_composite_score <- function(expr_mat, hist_file,
 
   # read clustering output files and combine in a list
   ccp_output <- readr::read_tsv(ccp_output)
-  dbscan_output <- readr::read_tsv(dbscan_output)
-  intnmf_output <- readr::read_tsv(intnmf_output)
-  # nbmclust cannot be applied to non-expression datasets*
-  if(!is.null(nbmclust_output)){
-    nbmclust_output <- readr::read_tsv(nbmclust_output)
-    cluster_output <- list(ccp_output, nbmclust_output, dbscan_output, intnmf_output)
-    names(cluster_output) <- c(
-      unique(ccp_output$method),
-      unique(nbmclust_output$method),
-      unique(dbscan_output$method),
-      unique(intnmf_output$method)
-    )
+  hdbscan_output <- readr::read_tsv(hdbscan_output)
+  if(!is.null(intnmf_output)){
+    intnmf_output <- readr::read_tsv(intnmf_output)
+    intnmf_method <- unique(intnmf_output$method)
   } else {
-    cluster_output <- list(ccp_output, dbscan_output, intnmf_output)
-    names(cluster_output) <- c(
-      unique(ccp_output$method),
-      unique(dbscan_output$method),
-      unique(intnmf_output$method)
-    )
+    intnmf_method <- NA
   }
+  mclust_output <- readr::read_tsv(mclust_output)
+  if(!is.null(nbmclust_output)){
+    nbmclust_output <- readr::read_tsv(nbmclust_output)  
+    nbmclust_method <- unique(nbmclust_output$method)
+  } else {
+    nbmclust_method <- NA
+  }
+  cluster_output <- list(ccp_output, nbmclust_output, mclust_output, hdbscan_output, intnmf_output)
+  names(cluster_output) <- c(
+    unique(ccp_output$method),
+    nbmclust_method,
+    unique(mclust_output$method),
+    unique(hdbscan_output$method),
+    intnmf_method
+  )
+  
+  # remove methods that have no input
+  cluster_output <- cluster_output[!is.na(names(cluster_output))]
   
   # do for each clustering output
   final_output <- data.frame()
