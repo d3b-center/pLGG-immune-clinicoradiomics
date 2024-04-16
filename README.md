@@ -7,3 +7,8 @@ This is fully described in https://github.com/d3b-center/peds-brain-auto-seg-pub
 
 # Immune Profiling
 
+
+# Clinicoradiomic Risk Stratification:
+https://github.com/d3b-center/pLGG-immune-clinicoradiomics/analyses/Clinicoradiomics
+
+
