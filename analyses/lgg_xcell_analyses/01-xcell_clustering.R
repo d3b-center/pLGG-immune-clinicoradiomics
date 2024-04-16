@@ -27,93 +27,121 @@ option_list <- list(
 opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
 mat <- opt$mat
 histology <- opt$histology
+
+# directories
 output_dir <- opt$output_dir
 dir.create(output_dir, recursive = TRUE, showWarnings = F)
 xcell_output_dir <- opt$xcell_output_dir
+dir.create(xcell_output_dir, recursive = TRUE, showWarnings = F)
 vtest_output_dir <- opt$vtest_output_dir
 dir.create(vtest_output_dir, recursive = TRUE, showWarnings = F)
 
-# directories
+# source functions from ClusTarIDseq
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+ClusTarIDseq_scripts <- file.path(root_dir, "analyses", "lgg_xcell_analyses", "utils")
+source(file.path(ClusTarIDseq_scripts, "run_ccp.R"))
+source(file.path(ClusTarIDseq_scripts, "get_cdf_datapoints.R"))
+source(file.path(ClusTarIDseq_scripts, "lspline_clustering.R"))
+source(file.path(ClusTarIDseq_scripts, "hdbscan_clustering.R"))
+source(file.path(ClusTarIDseq_scripts, "mclust_clustering.R"))
+source(file.path(ClusTarIDseq_scripts, "run_clusterstats.R"))
+source(file.path(ClusTarIDseq_scripts, "intnmf_clustering.R"))
+source(file.path(ClusTarIDseq_scripts, "final_composite_score.R"))
+source(file.path(ClusTarIDseq_scripts, "perform_diptest.R"))
+source(file.path(ClusTarIDseq_scripts, "compute_vtest.R"))
 
-# source functions for comparative clustering
-utils_dir <- file.path(root_dir, "analyses", "lgg_xcell_analyses", "utils")
-source(file.path(utils_dir, "UQ.R"))
-source(file.path(utils_dir, "run_ccp.R"))
-source(file.path(utils_dir, "get_cdf_datapoints.R"))
-source(file.path(utils_dir, "lspline_clustering.R"))
-source(file.path(utils_dir, "dbscan_clustering.R"))
-source(file.path(utils_dir, "nbmclust_clustering.R"))
-source(file.path(utils_dir, "intnmf_clustering.R"))
-source(file.path(utils_dir, "final_composite_score.R"))
-source(file.path(utils_dir, "compute_vtest.R"))
+# set default parameters for xcell score-clustering
+transformation_type_val = "none"
+feature_selection_val = "variance"
+var_prop = 100
+max_k = 10
+minpts_val = 20
 
-# read histology
-histology_df <- read_tsv(histology)
-
-# run lspline clustering and return the result with
-final_output <- file.path(output_dir, "final_score", "final_clustering_output.tsv")
-if(!file.exists(final_output)){
+# run ccp + lspline clustering
+ccp_outfile <- file.path(output_dir, "ccp_output", "ccp_optimal_clusters.tsv")
+if(!file.exists(ccp_outfile)){
   lspline_clustering(expr_mat = mat,
                      hist_file = histology,
                      filter_expr = FALSE,
                      protein_coding_only = FALSE,
-                     feature_selection = "variance",
-                     var_prop = 100,
-                     transformation_type = "none",
-                     max_k = 10,
+                     feature_selection = feature_selection_val,
+                     var_prop = var_prop,
+                     min_n = NULL,
+                     transformation_type = transformation_type_val,
+                     max_k = max_k,
                      coef_cutoff = 0.1,
                      min_cluster_size_prop = 0.1, max_cluster_size_prop = 0.5,
                      compute_all_equal = TRUE,
                      output_dir = file.path(output_dir, "ccp_output"))
-  
-  # run dbscan
-  dbscan_clustering(expr_mat = mat,
-                    filter_expr = FALSE,
-                    protein_coding_only = FALSE,
-                    feature_selection = "variance",
-                    var_prop = 100,
-                    transformation_type = "none",
-                    minpts_val = NULL,
-                    output_dir = file.path(output_dir, "dbscan_output"))
-  
-  # run intNMF
+}
+
+# run dbscan
+hdbscan_outfile <- file.path(output_dir, "hdbscan_output", "hdbscan_optimal_clusters.tsv")
+if(!file.exists(hdbscan_outfile)){
+  hdbscan_clustering(expr_mat = mat,
+                     filter_expr = FALSE,
+                     protein_coding_only = FALSE,
+                     feature_selection = feature_selection_val,
+                     var_prop = var_prop,
+                     min_n = NULL,
+                     transformation_type = transformation_type_val,
+                     minpts_val = minpts_val,
+                     output_dir = file.path(output_dir, "hdbscan_output"))
+}
+
+# run intNMF
+intnmf_outfile <- file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv")
+if(!file.exists(intnmf_outfile)){
   intnmf_clustering(expr_mat = mat,
                     filter_expr = FALSE,
                     protein_coding_only = FALSE,
-                    feature_selection = "variance",
-                    var_prop = 100,
-                    transformation_type = "none",
-                    max_k = 10,
+                    feature_selection = feature_selection_val,
+                    var_prop = var_prop,
+                    min_n = NULL,
+                    transformation_type = transformation_type_val,
+                    max_k = max_k,
                     output_dir = file.path(output_dir, "intnmf_output"))
-  
-  # run NB.mclust is not applicable because it works with integers and
-  # it will convert all values to 0 in this case
-  final_composite_score(expr_mat = mat,
-                        hist_file = histology,
-                        filter_expr = FALSE,
-                        protein_coding_only = FALSE,
-                        feature_selection = "variance",
-                        var_prop = 100,
-                        transformation_type = "none",
-                        ccp_output = file.path(output_dir, "ccp_output", "ccp_optimal_clusters.tsv"),
-                        nbmclust_output = NULL,
-                        dbscan_output = file.path(output_dir, "dbscan_output", "dbscan_optimal_clusters.tsv"),
-                        intnmf_output = file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv"),
-                        output_dir = file.path(output_dir, "final_score"))
-} else {
-  # read in results file 
-  clustering_method <- final_output %>%
-    read_tsv() %>%
-    filter(rank == 1) %>%
-    pull(clustering_method)
 }
 
-# pull output associated with clustering method of choice
+# run mClust
+mclust_outfile <- file.path(output_dir, "mclust_output", "mclust_optimal_clusters.tsv")
+if(!file.exists(mclust_outfile)){
+  mclust_clustering(expr_mat = mat, 
+                    filter_expr = FALSE,
+                    protein_coding_only = FALSE,
+                    feature_selection = feature_selection_val,
+                    var_prop = var_prop,
+                    min_n = NULL,
+                    transformation_type = transformation_type_val,
+                    output_dir = file.path(output_dir, "mclust_output"))
+}
+
+# final composite score for each clustering method
+final_composite_score(expr_mat = mat,
+                      hist_file = histology,
+                      filter_expr = FALSE,
+                      protein_coding_only = FALSE,
+                      feature_selection = feature_selection_val,
+                      var_prop = var_prop,
+                      transformation_type = transformation_type_val,
+                      ccp_output = ccp_outfile,
+                      nbmclust_output = NULL,
+                      mclust_output = mclust_outfile,
+                      hdbscan_output = hdbscan_outfile,
+                      intnmf_output = intnmf_outfile,
+                      output_dir = file.path(output_dir, "final_score"))
+
+# read in final composite score file and pull top ranking result
+clustering_method <- file.path(output_dir, "final_score", "final_clustering_output.tsv") %>%
+  read_tsv() %>%
+  filter(rank == 1) %>%
+  pull(clustering_method)
 if(clustering_method == "IntNMF"){
   final_output <- read_tsv(file.path(output_dir, "intnmf_output", "intnmf_optimal_clusters.tsv"))
-} else if(clustering_method == "dbscan") {
-  final_output <- read_tsv(file.path(output_dir, "dbscan_output", "dbscan_optimal_clusters.tsv"))
+} else if(clustering_method == "hdbscan") {
+  final_output <- read_tsv(file.path(output_dir, "hdbscan_output", "hdbscan_optimal_clusters.tsv"))
+} else if(clustering_method == "mclust") {
+  final_output <- read_tsv(file.path(output_dir, "mclust_output", "mclust_optimal_clusters.tsv"))
 } else {
   final_output <- read_tsv(file.path(output_dir, "ccp_output", "ccp_optimal_clusters.tsv"))
 }
@@ -134,6 +162,7 @@ xcell_score <- xcell_score %>%
                 feature_variance = var(fraction)) 
 
 # combine with histology molecular subtype
+histology_df <- read_tsv(histology)
 xcell_score <- histology_df %>%
   dplyr::select(Kids_First_Biospecimen_ID, sample_id, cohort_participant_id, molecular_subtype) %>%
   inner_join(xcell_score) 
@@ -168,7 +197,7 @@ xcell_score %>%
 # apply v.test function per gene
 vtest_output_all <- plyr::ddply(.data = xcell_score, 
                                 .variables = "cell_type", 
-                                .fun = function(x) compute.v.test(x, clustering_col = "cluster_assigned"))
+                                .fun = function(x) compute_vtest(x, clustering_col = "cluster_assigned"))
 # output vtest score
 vtest_output_all <- vtest_output_all %>%
   readr::write_tsv(file.path(vtest_output_dir, "vtest_scores_all.tsv"))

@@ -3,15 +3,19 @@
 #' @author Komal S. Rathi
 #'
 #' @import dplyr
+#' @import COINr
 #'
 #' @param expr_mat path to expression matrix with raw or expected counts
 #' @param hist_file path to histology file
+#' @param algorithms algorithms to be evaluated
+#' @param distances distances to be evaluated
 #' @param filter_expr filter genes by expession. logical TRUE or FALSE
 #' @param dispersion_percentile_val value for DGCA::filterGenes dispersion_percentile parameter
 #' @param protein_coding_only filter genes to protein coding only. logical TRUE or FALSE
 #' @param gencode_version gencode version to fetch gtf. Default is 27
 #' @param feature_selection feature selection strategy. Either variance or dip.test
 #' @param var_prop proportion of most variable genes to choose
+#' @param min_n minimum number of genes for dip.test
 #' @param transformation_type expression matrix transformation strategies.
 #' Can be either none for no transformation,
 #' vst for variance stabilizing transformation,
@@ -44,11 +48,13 @@
 #' @export
 #'
 
-lspline_clustering <- function(expr_mat, hist_file,
+lspline_clustering <- function(expr_mat, hist_file, 
+                               algorithms = c("hc", "pam", "km"), 
+                               distances = c("pearson", "spearman", "euclidean", "manhattan", "binary", "maximum", "canberra", "minkowski"),
                                filter_expr = TRUE, dispersion_percentile_val = 0.2,
                                protein_coding_only = TRUE, gencode_version = 27,
                                feature_selection = c("variance", "dip.test"),
-                               var_prop = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2"),
+                               var_prop = NULL, min_n = NULL, transformation_type = c("none", "tmm", "vst", "uq", "log2", "rank"),
                                max_k, coef_cutoff = 0.5,
                                min_cluster_size_prop = NULL, max_cluster_size_prop = NULL,
                                compute_all_equal = TRUE,
@@ -109,7 +115,7 @@ lspline_clustering <- function(expr_mat, hist_file,
   # transform input matrix
   if (transformation_type == "vst") {
     # transform using vst
-    expr_mat <- DESeq2::varianceStabilizingTransformation(round(as.matrix(expr_mat + 1)), blind = TRUE, fitType = "parametric")
+    expr_mat <- DESeq2::varianceStabilizingTransformation(round(as.matrix(expr_mat)), blind = TRUE, fitType = "parametric")
     expr_mat <- as.data.frame(expr_mat)
   } else if (transformation_type == "log2") {
     # log-transform
@@ -123,6 +129,8 @@ lspline_clustering <- function(expr_mat, hist_file,
     y <- edgeR::DGEList(counts = expr_mat)
     y <- edgeR::calcNormFactors(object = y, method = "TMM")
     expr_mat <- as.data.frame(edgeR::cpm(y))
+  } else if(transformation_type == "rank") {
+    expr_mat <- datawizard::ranktransform(expr_mat %>% as.data.frame())
   } else if (transformation_type == "none") {
     # do nothing
   }
@@ -134,30 +142,34 @@ lspline_clustering <- function(expr_mat, hist_file,
     stopifnot(var_prop <= 100)
     print(paste("subset to", var_prop, "%", "variable features"))
     n <- round(var_prop / 100 * nrow(expr_mat))
-    mads <- apply(expr_mat, 1, mad)
-    expr_mat <- expr_mat[rev(order(mads))[1:n], ]
+    vars <- apply(expr_mat, 1, var)
+    expr_mat <- expr_mat[rev(order(vars))[1:n], ]
   } else if (feature_selection == "dip.test") {
     # dip.test to filter features
-    expr_mat <- perform_diptest(count_matrix = expr_mat, matrix_type = "normalized_count", normalization_method = "none", filter_low_expr = FALSE)
+    expr_mat <- perform_diptest(count_matrix = expr_mat, 
+                                matrix_type = "normalized_count", 
+                                normalization_method = "none", 
+                                filter_low_expr = FALSE, 
+                                min_n = min_n)
   }
   print(paste0("Number of features:", nrow(expr_mat)))
 
   # compute all combinations of input parameters
-  algorithms <- c("hc", "pam", "km")
-  distances <- c("pearson", "spearman", "euclidean", "manhattan", "binary", "maximum", "canberra", "minkowski")
   compute_all <- expand.grid(algorithms, distances)
   colnames(compute_all) <- c("algorithms", "distances")
 
   # km can only be used with euclidean
   compute_all <- compute_all %>%
     dplyr::filter(!(!distances == "euclidean" & algorithms == "km"))
-  
-  # hc and pam are having issues with manhattan and minkowski distances*
+
+  # hc and pam are having issues with manhattan and minkowski distances
   compute_all <- compute_all %>%
     dplyr::filter(!(distances %in% c("minkowski", "manhattan") & algorithms %in% c("pam", "hc")))
 
-  # run ConsensusClusterPlus for all combinations
+  # set seed for reproducibility
   set.seed(100)
+  
+  # run ConsensusClusterPlus for all combinations
 
   # output dataframe
   output_df <- data.frame()
@@ -168,8 +180,13 @@ lspline_clustering <- function(expr_mat, hist_file,
     print(ccp_distance)
 
     # output filename
-    output_file <- paste(ccp_algorithm, ccp_distance, var_prop, sep = "_")
-    output_file <- paste0(output_file, ".rds")
+    if(feature_selection == "variance"){
+      suffix <- paste0("var_", var_prop)
+    } else if(feature_selection == "dip.test"){
+      suffix <- "dip_test"
+    }
+    prefix <- paste(ccp_algorithm, ccp_distance, suffix, sep = "_")
+    output_file <- paste0(prefix, ".rds")
     output_file <- file.path(output_dir, output_file)
 
     # call function to cluster via ConsensusClusterPlus
@@ -204,127 +221,138 @@ lspline_clustering <- function(expr_mat, hist_file,
     n <- length(delta_auc)
     coefs <- list()
     k_flat <- data.frame() # output dataframe
-    for (item in 2:n) {
-      k <- as.numeric(gsub("k", "", names(delta_auc)[item]))
-      # taken from ConsensusClusterPlus:::CDF, plot original consensus CDF plot
-      x <- cdf_data[[k]]$mids
-      y <- cdf_data[[k]]$counts
-      m1 <- lm(y ~ lspline::lspline(x, seq(0.005, 0.995, 0.02)))
-
-      # get coefficients that are below coef_cutoff and convert to NA to calculate longest stretch
-      coef <- m1$coefficients
-      coef[coef <= coef_cutoff] <- NA
-
-      # get cluster membership for a given k
-      cluster_class <- ccp_output[[item]]$consensusClass
-      cluster_class <- data.frame(cluster_class)
-
-      # combine cluster membership with survival data to compute additional stats
-      if (!is.null(hist_file)) {
-        data_for_stats <- cluster_class %>%
-          tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
-          inner_join(hist_file %>%
-            dplyr::select(Kids_First_Biospecimen_ID, OS_status, OS_days), by = "Kids_First_Biospecimen_ID") %>%
-          mutate(OS_status = ifelse(OS_status == "LIVING", 0,
-            ifelse(OS_status == "DECEASED", 1, NA)),
-            OS_days = as.numeric(OS_days))
-
-        # compute the effect of cluster membership in a cox model and compare to a 'base'/no-covariate model (via stats::anova)
-        results_cox_clust <- survival::coxph(survival::Surv(OS_days, OS_status) ~ cluster_class, data = data_for_stats)
-        results_cox <- survival::coxph(survival::Surv(OS_days, OS_status) ~ 1, data = data_for_stats)
-        cox_anova <- anova(results_cox, results_cox_clust)
-        cox_anova_pval <- round(as.numeric(broom::tidy(cox_anova)[2, "p.value"]), digits = 2)
-        cox_anova_chisq <- round(as.numeric(broom::tidy(cox_anova)[2, "statistic"]), digits = 2)
-      } else {
-        cox_anova_pval <- NA
-        cox_anova_chisq <- NA
-      }
-
-      # compute distance on dip test output and evaluate silhouette coefficients.
-      expr_mat_dist <- factoextra::get_dist(t(expr_mat), method = "pearson")
-      clus_stats <- fpc::cluster.stats(d = expr_mat_dist, cluster_class$cluster_class)
-      clus_stats$avg_sil <- mean(clus_stats$clus.avg.silwidths) # calculate mean
-      clus_stats <- lapply(clus_stats, FUN = function(x) {
-        if (length(x) > 1 & !is.null(x)) {
-          x <- toString(round(x, 2))
+    
+    # output file
+    results_file <- paste0(prefix, ".tsv")
+    results_file <- file.path(output_dir, results_file)
+    if(!file.exists(results_file)){
+      for (item in 2:n) {
+        k <- as.numeric(gsub("k", "", names(delta_auc)[item]))
+        # taken from ConsensusClusterPlus:::CDF, plot original consensus CDF plot
+        x <- cdf_data[[k]]$mids
+        y <- cdf_data[[k]]$counts
+        m1 <- lm(y ~ lspline::lspline(x, seq(0.005, 0.995, 0.02)))
+        
+        # get coefficients that are below coef_cutoff and convert to NA to calculate longest stretch
+        coef <- m1$coefficients
+        coef[coef <= coef_cutoff] <- NA
+        
+        # get cluster membership for a given k
+        cluster_class <- ccp_output[[item]]$consensusClass
+        cluster_class <- data.frame(cluster_class)
+        
+        # combine cluster membership with survival data to compute additional stats
+        if (!is.null(hist_file)) {
+          data_for_stats <- cluster_class %>%
+            tibble::rownames_to_column("Kids_First_Biospecimen_ID") %>%
+            inner_join(hist_file %>%
+                         dplyr::select(Kids_First_Biospecimen_ID, OS_status, OS_days), by = "Kids_First_Biospecimen_ID") %>%
+            mutate(OS_status = ifelse(OS_status == "LIVING", 0,
+                                      ifelse(OS_status == "DECEASED", 1, NA)
+            ), OS_days = as.numeric(OS_days))
+          
+          # compute the effect of cluster membership in a cox model and compare to a 'base'/no-covariate model (via stats::anova)
+          results_cox_clust <- survival::coxph(survival::Surv(OS_days, OS_status) ~ cluster_class, data = data_for_stats)
+          results_cox <- survival::coxph(survival::Surv(OS_days, OS_status) ~ 1, data = data_for_stats)
+          cox_anova <- anova(results_cox, results_cox_clust)
+          cox_anova_pval <- round(as.numeric(broom::tidy(cox_anova)[2, "p.value"]), digits = 2)
+          cox_anova_chisq <- round(as.numeric(broom::tidy(cox_anova)[2, "statistic"]), digits = 2)
         } else {
-          x <- round(as.numeric(x), digits = 2)
+          cox_anova_pval <- NA
+          cox_anova_chisq <- NA
         }
-      })
-      clus_stats <- t(as.data.frame(unlist(clus_stats)))
-      clus_stats <- clus_stats %>%
-        as.data.frame() %>%
-        dplyr::select(cluster.size, noisen, diameter, average.distance, median.distance, average.between, average.within, within.cluster.ss, clus.avg.silwidths, avg_sil, dunn, dunn2, entropy, wb.ratio)
-
-      # get cluster membership count for a given k
-      cluster_class <- cluster_class %>%
-        group_by(cluster_class) %>%
-        summarise(cluster_size = n())
-
-      # limits on cluster size
-      if (!is.null(min_cluster_size_prop) & !is.null(max_cluster_size_prop)) {
-        # set limits on cluster size
-        # max number of samples allowed in each cluster
-        max_cluster_size <- max_cluster_size_prop * ncol(expr_mat)
-        # min number of samples required in each cluster
-        min_cluster_size <- min_cluster_size_prop * ncol(expr_mat)
-        # return TRUE if ALL clusters in the selected k follow the above rule, else return FALSE
-        cluster_size <- cluster_class %>%
-          mutate(
-            cluster_size_min = ifelse(cluster_size >= min_cluster_size, TRUE, FALSE),
-            cluster_size_max = ifelse(cluster_size <= max_cluster_size, TRUE, FALSE)
-          ) %>%
-          summarise(
-            cluster_size_min = all(cluster_size_min),
-            cluster_size_max = all(cluster_size_max)
-          ) %>%
-          as.data.frame()
-      } else {
-        # no limits on cluster size
-        cluster_size <- data.frame(cluster_size_min = NA, cluster_size_max = NA)
-      }
-
-      # chisq test on sample count per cluster within a k to determine equality in cluster membership
-      if (compute_all_equal) {
-        all_equal <- chisq.test(x = cluster_class$cluster_size)
-        all_equal <- format(all_equal$p.value, digits = 3, scientific = TRUE)
-      } else {
-        all_equal <- NA
-      }
-
-      # calculate ks-test p-value between adjacent k and k-1
-      # should conflict arise, this will tell if there is a significant difference between 2 adjacent k
-      if (k == 2) {
-        # there is no k = 1 so use 0 as baseline
-        pval <- ks.test(x = 0, y = cdf_data[[k]]$counts, alternative = "two.sided")
-      } else {
-        pval <- ks.test(
-          x = cdf_data[k - 1][[1]]$counts,
-          y = cdf_data[[k]]$counts,
-          alternative = "two.sided"
+        
+        # compute distance on dip test output and evaluate silhouette coefficients.
+        expr_mat_dist <- factoextra::get_dist(t(expr_mat), method = "pearson")
+        clus_stats <- fpc::cluster.stats(d = expr_mat_dist, cluster_class$cluster_class)
+        clus_stats$avg_sil <- mean(clus_stats$clus.avg.silwidths) # calculate mean
+        clus_stats <- lapply(clus_stats, FUN = function(x) {
+          if (length(x) > 1 & !is.null(x)) {
+            x <- toString(round(x, 2))
+          } else {
+            x <- round(as.numeric(x), digits = 2)
+          }
+        })
+        clus_stats <- t(as.data.frame(unlist(clus_stats)))
+        clus_stats <- clus_stats %>%
+          as.data.frame() %>%
+          dplyr::select(cluster.size, noisen, diameter, average.distance, median.distance, average.between, average.within, within.cluster.ss, clus.avg.silwidths, avg_sil, dunn, dunn2, entropy, wb.ratio)
+        
+        # get cluster membership count for a given k
+        cluster_class <- cluster_class %>%
+          group_by(cluster_class) %>%
+          summarise(cluster_size = n())
+        
+        # limits on cluster size
+        if (!is.null(min_cluster_size_prop) & !is.null(max_cluster_size_prop)) {
+          # set limits on cluster size
+          # max number of samples allowed in each cluster
+          max_cluster_size <- max_cluster_size_prop * ncol(expr_mat)
+          # min number of samples required in each cluster
+          min_cluster_size <- min_cluster_size_prop * ncol(expr_mat)
+          # return TRUE if ALL clusters in the selected k follow the above rule, else return FALSE
+          cluster_size <- cluster_class %>%
+            mutate(
+              cluster_size_min = ifelse(cluster_size >= min_cluster_size, TRUE, FALSE),
+              cluster_size_max = ifelse(cluster_size <= max_cluster_size, TRUE, FALSE)
+            ) %>%
+            summarise(
+              cluster_size_min = all(cluster_size_min),
+              cluster_size_max = all(cluster_size_max)
+            ) %>%
+            as.data.frame()
+        } else {
+          # no limits on cluster size
+          cluster_size <- data.frame(cluster_size_min = NA, cluster_size_max = NA)
+        }
+        
+        # chisq test on sample count per cluster within a k to determine equality in cluster membership
+        if (compute_all_equal) {
+          all_equal <- chisq.test(x = cluster_class$cluster_size)
+          all_equal <- format(all_equal$p.value, digits = 3, scientific = TRUE)
+        } else {
+          all_equal <- NA
+        }
+        
+        # calculate ks-test p-value between adjacent k and k-1
+        # should conflict arise, this will tell if there is a significant difference between 2 adjacent k
+        if (k == 2) {
+          # there is no k = 1 so use 0 as baseline
+          pval <- ks.test(x = 0, y = cdf_data[[k]]$counts, alternative = "two.sided")
+        } else {
+          pval <- ks.test(
+            x = cdf_data[k - 1][[1]]$counts,
+            y = cdf_data[[k]]$counts,
+            alternative = "two.sided"
+          )
+        }
+        
+        # create a dataframe of all k, longest stretch of data points close to 0, delta AUC and p-value between k and k-1
+        # cluster_size and all_equal filters
+        k_df <- data.frame(
+          k = k,
+          stretch = longestNAstrech(coef),
+          delta_auc = round(delta_auc[[item]], digits = 2),
+          p_val = format(pval$p.value, digits = 3, scientific = TRUE),
+          cox_anova_pval, cox_anova_chisq,
+          clus_stats,
+          cluster_size,
+          all_equal
         )
+        
+        # bind for all k
+        k_flat <- rbind(k_flat, k_df)
       }
-
-      # create a dataframe of all k, longest stretch of data points close to 0, delta AUC and p-value between k and k-1
-      # cluster_size and all_equal filters
-      k_df <- data.frame(
-        k = k,
-        stretch = longestNAstrech(coef),
-        delta_auc = round(delta_auc[[item]], digits = 2),
-        p_val = format(pval$p.value, digits = 3, scientific = TRUE),
-        cox_anova_pval, cox_anova_chisq,
-        clus_stats,
-        cluster_size,
-        all_equal
-      )
-
-      # bind for all k
-      k_flat <- rbind(k_flat, k_df)
+      
+      # assign the output to corresponding algorithm and distance
+      tmp_df <- data.frame(algorithm = ccp_algorithm, distance = ccp_distance, feature_selection = suffix, k_flat)
+      readr::write_tsv(tmp_df, file = results_file)
+    } else {
+      # read file if already exists
+      print("File exists")
+      tmp_df <- readr::read_tsv(file = results_file) %>% as.data.frame()
     }
-
-    # assign the output to corresponding algorithm and distance
-    tmp_df <- data.frame(algorithm = ccp_algorithm, distance = ccp_distance, k_flat)
-
+    
     # this dataframe with contain output for all combinations of distance + algorithm + k
     output_df <- rbind(output_df, tmp_df)
   }
@@ -380,7 +408,7 @@ lspline_clustering <- function(expr_mat, hist_file,
   readr::write_tsv(x = output_df, file = file.path(output_dir, "lspline_output.tsv"))
 
   # pick the top ranking method and write out clustering info
-  output_file <- paste(output_df[1, "algorithm"], output_df[1, "distance"], var_prop, sep = "_")
+  output_file <- paste(output_df[1, "algorithm"], output_df[1, "distance"], suffix, sep = "_")
   output_file <- paste0(output_file, ".rds")
   output_file <- file.path(output_dir, output_file)
   optimal_clusters <- readRDS(output_file)

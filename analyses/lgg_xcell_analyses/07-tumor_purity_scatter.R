@@ -22,6 +22,12 @@ histology <- opt$histology
 plots_dir <- opt$plots_dir
 dir.create(plots_dir, showWarnings = F, recursive = T)
 
+# define directories
+# root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
+# analysis_dir <- file.path(root_dir, "lgg_xcell_analyses")
+# results_dir <- file.path(analysis_dir, "results", "scatter_analysis")
+# plots_dir <- file.path(analysis_dir, "plots", "scatter_analysis")
+
 # Load the xCell scores, transpose and subset
 xcell_scores <-
   readRDS(mat) %>%

@@ -1,7 +1,9 @@
 # Obtain Kaplan-Meier and Cox regression Survival Statistic Results and Plots
 
 suppressPackageStartupMessages({
-  library(tidyverse)
+  library(data.table)
+  library(dplyr)
+  library(readr)
   library(survminer)
   library(cowplot)
   library(survival)
@@ -11,7 +13,7 @@ suppressPackageStartupMessages({
 
 # define directories
 root_dir <- rprojroot::find_root(rprojroot::has_dir(".git"))
-data_dir <- file.path(root_dir, "data")
+data_dir <- file.path(root_dir, 'data')
 analysis_dir <- file.path(root_dir, "analyses", "lgg_xcell_analyses")
 results_dir <-
   file.path(analysis_dir, "results", "survival_analysis")
@@ -46,16 +48,16 @@ histology_df <- histology_df %>%
 # join clusters information with histologies data
 survival_data <- xcell_clusters %>%
   dplyr::rename("clusterID" = "cluster_assigned") %>%
-  inner_join(histology_df, by = "Kids_First_Biospecimen_ID")
+  dplyr::inner_join(histology_df, by = "Kids_First_Biospecimen_ID")
 
 # code a EFS_status column with the following logic:
 survival_data <- survival_data %>%
-  mutate(OS_days = as.numeric(OS_days),
+  dplyr::mutate(OS_days = as.numeric(OS_days),
          EFS_days = as.numeric(EFS_days),
          age_at_diagnosis_days = as.numeric(age_at_diagnosis_days))
 
 survival_data <- survival_data %>%
-  mutate(
+  dplyr::mutate(
     EFS_status = case_when(
       OS_status == "LIVING" & EFS_days == OS_days ~ 1,
       OS_status %in% c("LIVING", "DECEASED") & is.na(EFS_days) ~ 0,
@@ -66,12 +68,12 @@ survival_data <- survival_data %>%
   )
 
 survival_data <- survival_data %>%
-  mutate(EFS_days = ifelse(is.na(EFS_days), age_last_update_days, EFS_days)) %>%
-  mutate(EFS_days = as.numeric(EFS_days))
+  dplyr::mutate(EFS_days = ifelse(is.na(EFS_days), age_last_update_days, EFS_days)) %>%
+  dplyr::mutate(EFS_days = as.numeric(EFS_days))
 
 survival_data <- survival_data %>%
-  mutate(OS_days = ifelse(is.na(OS_days), age_last_update_days, OS_days)) %>%
-  mutate(OS_days = as.numeric(OS_days))
+  dplyr::mutate(OS_days = ifelse(is.na(OS_days), age_last_update_days, OS_days)) %>%
+  dplyr::mutate(OS_days = as.numeric(OS_days))
 
 # Encode OS status
 survival_data$OS_status <-
@@ -110,7 +112,9 @@ survival_plot <- ggsurvplot(
   ggtheme = theme_minimal(),
   palette = c("#E7B800", "#2E9FDF", "#8E44AD"),
   legend.title = "ClusterID",
-  legend.labs = c("Cluster 1", "Cluster 2", "Cluster 3")
+  legend.labs = c("Cluster 1", "Cluster 2", "Cluster 3"),
+  xlab = 'Time (Days)',
+  ylab = 'Overall Survival Probability'
 )
 
 print(survival_plot)
@@ -139,14 +143,18 @@ survival_plot <- ggsurvplot(
   ggtheme = theme_minimal(),
   palette = c("#E7B800", "#2E9FDF", "#8E44AD"),
   legend.title = "ClusterID",
-  legend.labs = c("Cluster 1", "Cluster 2", "Cluster 3")
+  legend.labs = c("Cluster 1", "Cluster 2", "Cluster 3"),
+  xlab = 'Time (Days)',
+  ylab = 'Progression-Free Survival Probability'
 )
 print(survival_plot)
 dev.off()
 
 # Fit the Cox model with OS- get a convergence warning due to limited iteration..checked with max iter but same warning message
+survival_data_complete <- survival_data_complete %>%
+  dplyr::mutate(clusterID = relevel(clusterID, ref = 3))
 
-res_cox <- coxph(
+res_cox <- survival::coxph(
   Surv(OS_days, OS_status) ~ age_at_diagnosis_days +
     reported_gender + race + CNS_region + molecular_subtype +
     clusterID,
@@ -154,7 +162,9 @@ res_cox <- coxph(
 )
 
 pdf(
-  file = file.path(plots_dir, "KM_OS_forestplot_lgg_clusters.pdf"),
+  file = file.path(plots_dir, 
+                   "KM_OS_forestplot_lgg_clusters.pdf"),
+  width = 15,
   onefile = FALSE
 )
 forest_model(
@@ -163,7 +173,7 @@ forest_model(
     'clusterID'
   ),
   exponentiate = F,
-  limits=log(c(.1, 50))
+  limits = log(c(.1, 50))
 )
 dev.off()
 
@@ -178,7 +188,7 @@ write.table(
 # Fit the Cox model with EFS- get a convergence warning due to limited iteration..checked with max iter but same warning message
 
 res_cox <-
-  coxph(
+  survival::coxph(
     Surv(EFS_days, EFS_status) ~ age_at_diagnosis_days +
       reported_gender + race + CNS_region + molecular_subtype +
       clusterID,
@@ -194,7 +204,9 @@ pdf(
 forest_model(
   res_cox,
   covariates = c(
-    'clusterID'
+    'clusterID',
+    'CNS_region',
+    'race'
   ),
   exponentiate = F,
   limits=log(c(.5, 50))

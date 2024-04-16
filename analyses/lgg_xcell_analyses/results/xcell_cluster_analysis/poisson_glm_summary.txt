@@ -1,0 +1,95 @@
+
+Call:
+glm(formula = y ~ molecular_subtype * cluster_assigned, family = poisson, 
+    data = anno_file)
+
+Deviance Residuals: 
+      Min         1Q     Median         3Q        Max  
+0.000e+00  0.000e+00  2.980e-08  7.885e-08  9.424e-08  
+
+Coefficients: (2 not defined because of singularities)
+                                                      Estimate Std. Error
+(Intercept)                                            3.36730    0.03448
+molecular_subtypeGNG, KIAA1549-BRAF                   -1.98100    0.25237
+molecular_subtypeGNG, wildtype                        -0.47692    0.06539
+molecular_subtypeLGG_CDKN2A/B                         -2.26868    0.33511
+molecular_subtypeLGG_IDH                              -1.75786    0.20295
+molecular_subtypeLGG_NF1                              -1.75786    0.20295
+molecular_subtypeLGG_RTK                              -0.47692    0.06539
+molecular_subtypeLGG, BRAF V600E                      -0.53408    0.06819
+molecular_subtypeLGG, KIAA1549-BRAF                   -0.37156    0.06074
+molecular_subtypeLGG, MYB/MYBL1                       -2.26868    0.33511
+molecular_subtypeLGG, other MAPK                      -1.28785    0.12967
+molecular_subtypeSEGA, wildtype                       -1.06471    0.10578
+cluster_assigned1                                     -1.28785    0.12967
+cluster_assigned2                                      0.39390    0.04159
+molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned1  0.59471    0.57386
+molecular_subtypeGNG, wildtype:cluster_assigned1      -0.50391    0.36196
+molecular_subtypeLGG_CDKN2A/B:cluster_assigned1        2.67415    0.36725
+molecular_subtypeLGG_IDH:cluster_assigned1             1.28785    0.31115
+molecular_subtypeLGG_NF1:cluster_assigned1             1.98100    0.25848
+molecular_subtypeLGG_RTK:cluster_assigned1             1.44200    0.14889
+molecular_subtypeLGG, BRAF V600E:cluster_assigned1     1.67352    0.14790
+molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned1  2.91709    0.13932
+molecular_subtypeLGG, MYB/MYBL1:cluster_assigned1           NA         NA
+molecular_subtypeLGG, other MAPK:cluster_assigned1     1.60631    0.20175
+molecular_subtypeSEGA, wildtype:cluster_assigned1      0.77703    0.23365
+molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned2 -0.68159    0.41874
+molecular_subtypeGNG, wildtype:cluster_assigned2      -2.18566    0.34048
+molecular_subtypeLGG_CDKN2A/B:cluster_assigned2       -0.10622    0.41874
+molecular_subtypeLGG_IDH:cluster_assigned2            -2.00334    1.02065
+molecular_subtypeLGG_NF1:cluster_assigned2            -0.05743    0.24928
+molecular_subtypeLGG_RTK:cluster_assigned2            -0.28854    0.08554
+molecular_subtypeLGG, BRAF V600E:cluster_assigned2    -0.33675    0.09098
+molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned2  0.72124    0.06707
+molecular_subtypeLGG, MYB/MYBL1:cluster_assigned2     -0.79937    0.60236
+molecular_subtypeLGG, other MAPK:cluster_assigned2    -0.27612    0.17234
+molecular_subtypeSEGA, wildtype:cluster_assigned2           NA         NA
+                                                      z value Pr(>|z|)    
+(Intercept)                                            97.652  < 2e-16 ***
+molecular_subtypeGNG, KIAA1549-BRAF                    -7.850 4.17e-15 ***
+molecular_subtypeGNG, wildtype                         -7.294 3.01e-13 ***
+molecular_subtypeLGG_CDKN2A/B                          -6.770 1.29e-11 ***
+molecular_subtypeLGG_IDH                               -8.661  < 2e-16 ***
+molecular_subtypeLGG_NF1                               -8.661  < 2e-16 ***
+molecular_subtypeLGG_RTK                               -7.294 3.01e-13 ***
+molecular_subtypeLGG, BRAF V600E                       -7.833 4.77e-15 ***
+molecular_subtypeLGG, KIAA1549-BRAF                    -6.118 9.50e-10 ***
+molecular_subtypeLGG, MYB/MYBL1                        -6.770 1.29e-11 ***
+molecular_subtypeLGG, other MAPK                       -9.932  < 2e-16 ***
+molecular_subtypeSEGA, wildtype                       -10.065  < 2e-16 ***
+cluster_assigned1                                      -9.932  < 2e-16 ***
+cluster_assigned2                                       9.471  < 2e-16 ***
+molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned1   1.036 0.300048    
+molecular_subtypeGNG, wildtype:cluster_assigned1       -1.392 0.163869    
+molecular_subtypeLGG_CDKN2A/B:cluster_assigned1         7.282 3.30e-13 ***
+molecular_subtypeLGG_IDH:cluster_assigned1              4.139 3.49e-05 ***
+molecular_subtypeLGG_NF1:cluster_assigned1              7.664 1.80e-14 ***
+molecular_subtypeLGG_RTK:cluster_assigned1              9.685  < 2e-16 ***
+molecular_subtypeLGG, BRAF V600E:cluster_assigned1     11.315  < 2e-16 ***
+molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned1  20.938  < 2e-16 ***
+molecular_subtypeLGG, MYB/MYBL1:cluster_assigned1          NA       NA    
+molecular_subtypeLGG, other MAPK:cluster_assigned1      7.962 1.70e-15 ***
+molecular_subtypeSEGA, wildtype:cluster_assigned1       3.326 0.000882 ***
+molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned2  -1.628 0.103585    
+molecular_subtypeGNG, wildtype:cluster_assigned2       -6.419 1.37e-10 ***
+molecular_subtypeLGG_CDKN2A/B:cluster_assigned2        -0.254 0.799748    
+molecular_subtypeLGG_IDH:cluster_assigned2             -1.963 0.049668 *  
+molecular_subtypeLGG_NF1:cluster_assigned2             -0.230 0.817784    
+molecular_subtypeLGG_RTK:cluster_assigned2             -3.373 0.000743 ***
+molecular_subtypeLGG, BRAF V600E:cluster_assigned2     -3.702 0.000214 ***
+molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned2  10.753  < 2e-16 ***
+molecular_subtypeLGG, MYB/MYBL1:cluster_assigned2      -1.327 0.184490    
+molecular_subtypeLGG, other MAPK:cluster_assigned2     -1.602 0.109111    
+molecular_subtypeSEGA, wildtype:cluster_assigned2          NA       NA    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 1.4665e+04  on 515  degrees of freedom
+Residual deviance: 4.9427e-13  on 482  degrees of freedom
+AIC: 2706.5
+
+Number of Fisher Scoring iterations: 3
+
