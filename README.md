@@ -5,7 +5,7 @@ This code repository includes the data and source codes used in the manuscript "
 - CaPTk, v1.8.1 (https://cbica.github.io/CaPTk/)
 - Python3 
 - R v4.3
-- MATLAB 2018B (v9.5)
+- MATLAB 2023A (v23.2)
 
 
 ## MRI Pre-processing and Tumor Segmentation:
