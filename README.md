@@ -11,7 +11,7 @@ This code repository includes the data and source codes used in the manuscript "
 
 ## Hardware Used for this Study
 - CUBIC (HPC Cluster) (https://www.med.upenn.edu/cbica/cubic.html)
-- Flywheel
+- AWS/EC2 for batch image pre-processing, segmentation, radiomic feature extraction
 
 
 ## MRI Pre-processing and Tumor Segmentation:
