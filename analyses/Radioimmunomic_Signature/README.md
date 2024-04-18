@@ -1,8 +1,16 @@
-## This directory includes the codes for the radioimmunomic signature
+## This directory includes MATLAB codes for radioimmunomic signature
 ### Author: Anahita Fathi Kazerooni
 
 ### Software Requirements
-- MATLAB 2023A 
+- MATLAB 2023A
+  - Parallel Computing Toolbox
+  - Statistics and Machine Learning Toolbox
+
+### Hardware Requirements
+multicore processors, GPUs, or computer clusters
+
+
+### Code Description
 
 ### Inputs
 - Radiomic Features
