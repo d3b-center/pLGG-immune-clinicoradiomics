@@ -6,11 +6,12 @@ This code repository includes the data and source codes used in the manuscript "
 - Python3 
 - R v4.3
 - MATLAB 2023A (v23.2)
+  - Parallel Computing Toolbox
+  - Statistics and Machine Learning Toolbox
 
 ## Hardware Used for this Study
 - CUBIC (HPC Cluster) (https://www.med.upenn.edu/cbica/cubic.html)
 - Flywheel
-- CAVATICA
 
 
 ## MRI Pre-processing and Tumor Segmentation:
