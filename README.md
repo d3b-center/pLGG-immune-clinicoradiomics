@@ -7,6 +7,11 @@ This code repository includes the data and source codes used in the manuscript "
 - R v4.3
 - MATLAB 2023A (v23.2)
 
+## Hardware Used for this Study
+- CUBIC (HPC Cluster) (https://www.med.upenn.edu/cbica/cubic.html)
+- Flywheel
+- CAVATICA
+
 
 ## MRI Pre-processing and Tumor Segmentation:
 - Required MRI sequences: T1, T1CE, T2, FLAIR (ADC optional)
@@ -20,7 +25,6 @@ This code repository includes the data and source codes used in the manuscript "
 - Radiomic feature extraction, using CaPTk v1.8.1: https://cbica.github.io/CaPTk/ht_FeatureExtraction.html;
   - parameter file for radiomic feature extraction: radiomic_feature_params_20230725.csv
   - sample batch file: SampleBatchFile.csv
-
 
 ## Immune Profiling:
 - analyses/lgg_xcell_analyses
