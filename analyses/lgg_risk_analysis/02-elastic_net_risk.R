@@ -185,6 +185,9 @@ result_down <- result %>%
 
 result_filt <- rbindlist(l = list(result_up, result_down))
 
+# write data for reproducibility
+fwrite(result_filt, file = file.path(output_dir, 'coef_EL_LGGrisk.tsv'), sep = '\t')
+
 p2 <- ggplot(result_filt,
              aes(
                x = reorder(pathways,-coefficients),
