@@ -88,7 +88,8 @@ results
 ├── EL_testing_prediction_summary.txt
 ├── EL_training_prediction_summary.txt
 ├── estimated_testing_error_cv.txt
-└── full_coefficient_table.txt
+├── full_coefficient_table.txt
+└── coef_EL_LGGrisk.tsv
 ```
 
 Associated plots:
@@ -97,4 +98,40 @@ Associated plots:
 plots
 ├── EL_metrics.pdf
 └── coef_EL_LGGrisk.pdf
+```
+
+### Germline Risk Analysis
+
+#### Run script
+
+```
+Rscript --vanilla 03-germline_risk.R --help
+
+Usage: 03-germline_risk.R [options]
+
+Options:
+	--histology_file=HISTOLOGY_FILE
+		histology file for all OpenPedCan samples (.tsv)
+
+	--risk_file=RISK_FILE
+		file with risk scores
+
+	--germline_file=GERMLINE_FILE
+		file with germline data
+
+	--output_dir=OUTPUT_DIR
+		output directory
+
+	--plots_dir=PLOTS_DIR
+		plots directory
+
+	-h, --help
+		Show this help message and exit
+```
+
+#### Output
+
+```
+results
+└── germline_fisher_test.rds
 ```
