@@ -56,16 +56,13 @@ xcell_spread <- xcell_score %>%
 xcell_score$cluster_assigned <- as.factor(xcell_score$cluster_assigned)
 anno_file <- xcell_score %>%
   filter(molecular_subtype %in% mol_subtypes_to_use) %>%
-  dplyr::select(
-    Kids_First_Biospecimen_ID,
-    `2021_WHO_Classification`,
-    # molecular_subtype,
-    cluster_assigned
-  ) %>%
+  dplyr::select(Kids_First_Biospecimen_ID,
+                `2021_WHO_Classification`,
+                # molecular_subtype,
+                cluster_assigned) %>%
   ungroup() %>%
   distinct() %>%
-  arrange(cluster_assigned,
-          #molecular_subtype,
+  arrange(cluster_assigned, #molecular_subtype,
           `2021_WHO_Classification`) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
@@ -87,7 +84,8 @@ anno_colors <- lapply(anno_colors, function(x)
 anno_colors$`2021_WHO_Classification` <- anno_colors$`2021_WHO_Classification`[names(anno_colors$`2021_WHO_Classification`) %in% anno_file$`2021_WHO_Classification`]
 
 # write out xcell input file for reproducibility
-write_tsv(xcell_spread %>% rownames_to_column(" "), file = file.path(output_dir, "xcell_heatmap.tsv"))
+write_tsv(xcell_spread %>% rownames_to_column(" "),
+          file = file.path(output_dir, "xcell_heatmap.tsv"))
 
 # generate heatmap
 pheatmap::pheatmap(

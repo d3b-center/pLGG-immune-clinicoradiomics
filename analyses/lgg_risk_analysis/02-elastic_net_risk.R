@@ -18,14 +18,15 @@ suppressPackageStartupMessages({
 
 # parse arguments
 option_list <- list(
-  make_option(c("--histology_file"), type = "character",
-              help = "histology file for all OpenPedCan samples (.tsv)"),
-  make_option(c("--risk_file"), type = "character", default = NULL,
-              help = "file with risk scores"),
-  make_option(c("--output_dir"), type = "character",
-              help = "output directory"),
-  make_option(c("--plots_dir"), type = "character",
-              help = "plots directory")
+  make_option(c("--histology_file"), type = "character", help = "histology file for all OpenPedCan samples (.tsv)"),
+  make_option(
+    c("--risk_file"),
+    type = "character",
+    default = NULL,
+    help = "file with risk scores"
+  ),
+  make_option(c("--output_dir"), type = "character", help = "output directory"),
+  make_option(c("--plots_dir"), type = "character", help = "plots directory")
 )
 opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
 histology_file <- opt$histology_file
@@ -35,9 +36,9 @@ dir.create(output_dir, showWarnings = F, recursive = T)
 plots_dir <- opt$plots_dir
 dir.create(plots_dir, showWarnings = F, recursive = T)
 
-# read histology file 
+# read histology file
 histology_file <- histology_file %>%
-  fread() 
+  fread()
 
 # read pathways file
 lgg_pathways <- readRDS(file.path(output_dir, 'ssgsea_matrix.rds'))
@@ -45,30 +46,34 @@ lgg_pathways <- readRDS(file.path(output_dir, 'ssgsea_matrix.rds'))
 # read imaging risk file and pull corresponding bs identifiers
 lgg_clusters <- readxl::read_xlsx(risk_file)
 histology_file <- histology_file %>%
-  filter(cohort_participant_id %in% lgg_clusters$SubjectID,
-         experimental_strategy == "RNA-Seq") %>%
-  dplyr::select(cohort_participant_id,
-                Kids_First_Biospecimen_ID,
-                molecular_subtype,
-                CNS_region,
-                reported_gender,
-                race,
-                age_at_diagnosis_days,
-                RNA_library)
+  filter(
+    cohort_participant_id %in% lgg_clusters$SubjectID,
+    experimental_strategy == "RNA-Seq"
+  ) %>%
+  dplyr::select(
+    cohort_participant_id,
+    Kids_First_Biospecimen_ID,
+    molecular_subtype,
+    CNS_region,
+    reported_gender,
+    race,
+    age_at_diagnosis_days,
+    RNA_library
+  )
 
-hist_risk <- merge(histology_file, lgg_clusters, 
-                  by.x = 'cohort_participant_id', 
-                  by.y = 'SubjectID')
+hist_risk <- merge(histology_file,
+                   lgg_clusters,
+                   by.x = 'cohort_participant_id',
+                   by.y = 'SubjectID')
 
 lgg_pathways <- lgg_pathways %>%
   t() %>%
   as.data.table(keep.rownames = T) %>%
-  dplyr::rename('Kids_First_Biospecimen_ID' ='rn')
+  dplyr::rename('Kids_First_Biospecimen_ID' = 'rn')
 
 lgg_pathways_risk <- hist_risk %>%
   dplyr::inner_join(lgg_pathways, by = 'Kids_First_Biospecimen_ID') %>%
-  dplyr::rename('risk_score' ='Risk Score',
-                'risk_group' = 'Risk Group') %>%
+  dplyr::rename('risk_score' = 'Risk Score', 'risk_group' = 'Risk Group') %>%
   dplyr::mutate(age_at_diagnosis_days = as.numeric(age_at_diagnosis_days)) %>%
   dplyr::mutate(molecular_subtype = gsub('-', '_', molecular_subtype)) %>%
   dplyr::mutate(molecular_subtype = gsub('\\, ', '_', molecular_subtype)) %>%
@@ -93,18 +98,20 @@ test_data <- lgg_pathways_risk %>%
 
 pathway_names <- colnames(lgg_pathways)[!names(lgg_pathways) %in% c("Kids_First_Biospecimen_ID")]
 
-covariates <- c('molecular_subtype',
-               'CNS_region',
-               'reported_gender',
-               'race',
-               'age_at_diagnosis_days')
+covariates <- c(
+  'molecular_subtype',
+  'CNS_region',
+  'reported_gender',
+  'race',
+  'age_at_diagnosis_days'
+)
 
 train_formula <- paste0('risk_score ~ ', paste0(c(covariates, pathway_names), collapse = " + "))
 
 
 # Dummy code categorical predictor variables
 x <- model.matrix(as.formula(train_formula), data = as.data.frame(train_data))
-x <- x[,-1]
+x <- x[, -1]
 
 # Convert the outcome (class) to a numerical variable
 y <- train_data$risk_score
@@ -112,8 +119,7 @@ y <- train_data$risk_score
 
 ### Train and test the model
 
-cv_5 <- caret::trainControl(method = "cv",
-                            number = 10)
+cv_5 <- caret::trainControl(method = "cv", number = 10)
 
 hit_elnet <- caret::train(
   form = as.formula(train_formula),
@@ -125,23 +131,27 @@ hit_elnet <- caret::train(
 
 get_best_result <- function(caret_fit) {
   best <- which(rownames(caret_fit$results) == rownames(caret_fit$bestTune))
-  best_result <- caret_fit$results[best,]
+  best_result <- caret_fit$results[best, ]
   rownames(best_result) <- NULL
   best_result
 }
 
-### write out accuracy metrics and tuning plots. 
+### write out accuracy metrics and tuning plots.
 best_result <- get_best_result(hit_elnet)
-fwrite(best_result, 
-       file = file.path(output_dir, 'estimated_testing_error_cv.txt'), 
-       sep = '\t')
+fwrite(
+  best_result,
+  file = file.path(output_dir, 'estimated_testing_error_cv.txt'),
+  sep = '\t'
+)
 
-p <- ggplot(data = hit_elnet) + 
-  theme(legend.position = "none") + 
+p <- ggplot(data = hit_elnet) +
+  theme(legend.position = "none") +
   theme_classic()
-ggsave(filename = file.path(plots_dir, 'EL_metrics.pdf'),
-       plot = p,
-       width = 15)
+ggsave(
+  filename = file.path(plots_dir, 'EL_metrics.pdf'),
+  plot = p,
+  width = 15
+)
 
 ### Predict on training data
 predictions <- hit_elnet %>% predict(train_data)
@@ -150,9 +160,11 @@ summary <- data.table(
   'Scatter Index' = nrmse(predictions, train_data$risk_score, norm = 'maxmin'),
   'Rsquare' = R2(predictions, train_data$risk_score)
 )
-fwrite(summary, 
-       file = file.path(output_dir, 'EL_training_prediction_summary.txt'), 
-       sep = '\t')
+fwrite(
+  summary,
+  file = file.path(output_dir, 'EL_training_prediction_summary.txt'),
+  sep = '\t'
+)
 
 # Make predictions on the test data
 predictions <- hit_elnet %>% predict(test_data)
@@ -162,18 +174,20 @@ summary <- data.table(
   'Rsquare' = R2(predictions, test_data$risk_score)
 )
 
-fwrite(summary, 
-       file = file.path(output_dir, 'EL_testing_prediction_summary.txt'), 
-       sep = '\t')
+fwrite(
+  summary,
+  file = file.path(output_dir, 'EL_testing_prediction_summary.txt'),
+  sep = '\t'
+)
 
-coef_min <- coef(hit_elnet$finalModel, 
-                hit_elnet$bestTune$lambda)
+coef_min <- coef(hit_elnet$finalModel, hit_elnet$bestTune$lambda)
 
-result <- data.table('pathways' = colnames(x)[which(coef_min != 0)],
-                    'coefficients' = coef_min@x) %>%
+result <- data.table('pathways' = colnames(x)[which(coef_min != 0)], 'coefficients' = coef_min@x) %>%
   dplyr::arrange(coefficients)
 
-fwrite(result, file = file.path(output_dir, 'full_coefficient_table.txt'), sep = '\t')
+fwrite(result,
+       file = file.path(output_dir, 'full_coefficient_table.txt'),
+       sep = '\t')
 
 result_up <- result %>%
   dplyr::arrange(desc(coefficients)) %>%
@@ -186,11 +200,13 @@ result_down <- result %>%
 result_filt <- rbindlist(l = list(result_up, result_down))
 
 # write data for reproducibility
-fwrite(result_filt, file = file.path(output_dir, 'coef_EL_LGGrisk.tsv'), sep = '\t')
+fwrite(result_filt,
+       file = file.path(output_dir, 'coef_EL_LGGrisk.tsv'),
+       sep = '\t')
 
 p2 <- ggplot(result_filt,
              aes(
-               x = reorder(pathways,-coefficients),
+               x = reorder(pathways, -coefficients),
                y = coefficients,
                fill = coefficients
              )) +
@@ -205,8 +221,9 @@ p2 <- ggplot(result_filt,
   guides(fill = "none")
 
 
-ggsave(filename = file.path(plots_dir, 'coef_EL_LGGrisk.pdf'),
-       plot = p2,
-       width = 15,
-       device = 'pdf')
-
+ggsave(
+  filename = file.path(plots_dir, 'coef_EL_LGGrisk.pdf'),
+  plot = p2,
+  width = 15,
+  device = 'pdf'
+)

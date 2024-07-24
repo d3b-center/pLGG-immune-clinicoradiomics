@@ -50,7 +50,15 @@ who_classification <- who_classification %>%
 histology <- histology %>%
   left_join(who_classification) %>%
   filter(sample_id %in% xcell_score$sample_id) %>%
-  dplyr::select(any_of(c('Kids_First_Biospecimen_ID', '2021_WHO_Classification', 'composition', 'sample_id', 'experimental_strategy')))
+  dplyr::select(any_of(
+    c(
+      'Kids_First_Biospecimen_ID',
+      '2021_WHO_Classification',
+      'composition',
+      'sample_id',
+      'experimental_strategy'
+    )
+  ))
 
 # molecular subtypes > 5 samples
 mol_subtypes_to_use <- xcell_score %>%
@@ -181,7 +189,8 @@ anno_file_ca <- anno_file %>%
 anno_file_ca[is.na(anno_file_ca)] <- 0
 
 # write data for reproducibility
-write_tsv(anno_file_ca %>% rownames_to_column(" "), file = file.path(output_dir, "coranalysis.tsv"))
+write_tsv(anno_file_ca %>% rownames_to_column(" "),
+          file = file.path(output_dir, "coranalysis.tsv"))
 
 pdf(file = file.path(plots_dir, 'coranalysis.pdf'))
 res.ca <- FactoMineR::CA(anno_file_ca, ncp = 5, graph = TRUE)

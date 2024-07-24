@@ -121,14 +121,11 @@ mol_subtypes_to_use <- sample_cluster %>%
 
 sample_cluster <- sample_cluster %>%
   filter(molecular_subtype %in% mol_subtypes_to_use) %>%
-  dplyr::select(
-    Kids_First_Biospecimen_ID,
-    `2021_WHO_Classification`,
-    # molecular_subtype,
-    cluster_assigned
-  ) %>%
-  arrange(cluster_assigned,
-          # molecular_subtype,
+  dplyr::select(Kids_First_Biospecimen_ID,
+                `2021_WHO_Classification`,
+                # molecular_subtype,
+                cluster_assigned) %>%
+  arrange(cluster_assigned, # molecular_subtype,
           `2021_WHO_Classification`) %>%
   filter(Kids_First_Biospecimen_ID %in% colnames(count.norm))
 count.norm <- count.norm %>%
@@ -203,13 +200,13 @@ pheatmap(
 #   dplyr::select(sample_cluster$Kids_First_Biospecimen_ID)
 # gene_count_zscore <- t(apply(gene_count, MARGIN = 1, FUN = get_zscore))
 # rownames(gene_count_zscore) <- total$gene
-# 
+#
 # # write out heatmap input for reproducibility
 # write_tsv(
 #   gene_count_zscore %>% as.data.frame %>% rownames_to_column(" "),
 #   file = file.path(output_dir, "TIS_heatmap_zscore.tsv")
 # )
-# 
+#
 # # generate heatmap (z-scores)
 # pheatmap(
 #   mat = as.matrix(gene_count_zscore),
