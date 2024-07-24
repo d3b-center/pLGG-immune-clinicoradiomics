@@ -23,13 +23,18 @@ dir.create(plots_dir, showWarnings = F, recursive = T)
 
 # xcell clusters (imaging data has cohort participant id instead of biospecimen id)
 xcell_clusters <-
-  file.path(analysis_dir, "results", "xcell_output", "xcell_score_cluster.tsv") %>%
+  file.path(analysis_dir,
+            "results",
+            "xcell_output",
+            "xcell_score_cluster.tsv") %>%
   data.table::fread() %>%
   unique(., by = 'Kids_First_Biospecimen_ID')
 
 # map cohort participant id to biospecimen from histology
 histology_df <-
-  file.path(data_dir, "20230826_release.annotated_histologies_subset.tsv") %>% read_tsv()
+  file.path(data_dir,
+            "2024-07-10_annotated_histologies_2021_WHO_class.tsv") %>%
+  read_tsv()
 histology_df <- histology_df %>%
   dplyr::select(
     Kids_First_Participant_ID,
@@ -42,7 +47,25 @@ histology_df <- histology_df %>%
     age_at_diagnosis_days,
     reported_gender,
     race,
-    CNS_region
+    `2021_WHO_Classification`
+  )
+
+# Pull in old release for CNS_region
+histology_df_cns <-
+  file.path(data_dir, "20230826_release.annotated_histologies.tsv") %>%
+  read_tsv() %>%
+  dplyr::select(any_of(c(
+    'Kids_First_Biospecimen_ID', 'CNS_region'
+  )))
+
+histology_df <- histology_df %>%
+  dplyr::inner_join(histology_df_cns, by = 'Kids_First_Biospecimen_ID') %>%
+  dplyr::mutate(
+    `2021_WHO_Classification` = ifelse(
+      `2021_WHO_Classification` == 'N/A',
+      'Pediatric-type diffuse low-grade gliomas',
+      `2021_WHO_Classification`
+    )
   )
 
 # join clusters information with histologies data
@@ -52,9 +75,11 @@ survival_data <- xcell_clusters %>%
 
 # code a EFS_status column with the following logic:
 survival_data <- survival_data %>%
-  dplyr::mutate(OS_days = as.numeric(OS_days),
-         EFS_days = as.numeric(EFS_days),
-         age_at_diagnosis_days = as.numeric(age_at_diagnosis_days))
+  dplyr::mutate(
+    OS_days = as.numeric(OS_days),
+    EFS_days = as.numeric(EFS_days),
+    age_at_diagnosis_days = as.numeric(age_at_diagnosis_days)
+  )
 
 survival_data <- survival_data %>%
   dplyr::mutate(
@@ -126,6 +151,11 @@ dev.off()
 fit <-
   survival::survfit(as.formula("survival::Surv(EFS_days, EFS_status) ~ clusterID"),
                     data = survival_data_complete)
+
+# write out data for reproducibility
+write_tsv(broom::tidy(fit),
+          file = file.path(results_dir, "KM_EFS_plot_lgg_clusters.tsv"))
+
 pdf(
   file = file.path(plots_dir, "KM_EFS_plot_lgg_clusters.pdf"),
   height = 8,
@@ -150,30 +180,39 @@ survival_plot <- ggsurvplot(
 print(survival_plot)
 dev.off()
 
-# Fit the Cox model with OS- get a convergence warning due to limited iteration..checked with max iter but same warning message
+# Fit the Cox model with OS, remove subtypes with 2 or fewer samples
 survival_data_complete <- survival_data_complete %>%
   dplyr::mutate(clusterID = relevel(clusterID, ref = 3))
 
-res_cox <- survival::coxph(
-  Surv(OS_days, OS_status) ~ age_at_diagnosis_days +
-    reported_gender + race + CNS_region + molecular_subtype +
-    clusterID,
-  data = survival_data_complete
-)
+survival_data_groups <- survival_data_complete %>%
+  dplyr::group_by(`2021_WHO_Classification`) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 2) %>%
+  dplyr::pull(`2021_WHO_Classification`)
+
+survival_data_complete <- survival_data_complete %>%
+  dplyr::filter(`2021_WHO_Classification` %in% survival_data_groups) %>%
+  dplyr::mutate(`2021_WHO_Classification` = as.factor(`2021_WHO_Classification`)) %>%
+  dplyr::mutate(
+    `2021_WHO_Classification` = relevel(`2021_WHO_Classification`, ref = 'Pediatric-type diffuse low-grade gliomas')
+  )
+
+res_cox <- survival::coxph(Surv(OS_days, OS_status) ~ age_at_diagnosis_days +
+                             reported_gender +
+                             clusterID,
+                           data = survival_data_complete)
 
 pdf(
-  file = file.path(plots_dir, 
-                   "KM_OS_forestplot_lgg_clusters.pdf"),
+  file = file.path(plots_dir, "KM_OS_forestplot_lgg_clusters.pdf"),
   width = 15,
   onefile = FALSE
 )
 forest_model(
   res_cox,
-  covariates = c(
-    'clusterID'
-  ),
-  exponentiate = F,
-  limits = log(c(.1, 50))
+  covariates = c('clusterID', 'age_at_diagnosis_days', 'reported_gender'),
+  exponentiate = T,
+  limits = log(c(.5, 50)),
+  exclude_infinite_cis = TRUE
 )
 dev.off()
 
@@ -190,7 +229,7 @@ write.table(
 res_cox <-
   survival::coxph(
     Surv(EFS_days, EFS_status) ~ age_at_diagnosis_days +
-      reported_gender + race + CNS_region + molecular_subtype +
+      reported_gender + race + CNS_region + `2021_WHO_Classification` +
       clusterID,
     data = survival_data_complete
   )
@@ -198,18 +237,19 @@ res_cox <-
 pdf(
   file = file.path(plots_dir, "KM_EFS_forestplot_lgg_clusters.pdf"),
   height = 8,
-  width = 10,
+  width = 13,
   onefile = FALSE
 )
 forest_model(
   res_cox,
   covariates = c(
     'clusterID',
-    'CNS_region',
-    'race'
+    'age_at_diagnosis_days',
+    'reported_gender',
+    '`2021_WHO_Classification`'
   ),
-  exponentiate = F,
-  limits=log(c(.5, 50))
+  exponentiate = T,
+  limits = log(c(.5, 50))
 )
 dev.off()
 

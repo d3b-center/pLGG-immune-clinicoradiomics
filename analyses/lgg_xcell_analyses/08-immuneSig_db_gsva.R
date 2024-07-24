@@ -13,14 +13,10 @@ suppressPackageStartupMessages({
 
 # parse arguments
 option_list <- list(
-  make_option(c("--mat"), type = "character",
-              help = "gene expression matrix preferably TPM (.rds)"),
-  make_option(c("--xcell_file"), type = "character",
-              help = "xcell score + cluster file (.tsv)"),
-  make_option(c("--output_dir"), type = "character",
-              help = "output directory for files"),
-  make_option(c("--plots_dir"), type = "character",
-              help = "output directory for plots")
+  make_option(c("--mat"), type = "character", help = "gene expression matrix preferably TPM (.rds)"),
+  make_option(c("--xcell_file"), type = "character", help = "xcell score + cluster file (.tsv)"),
+  make_option(c("--output_dir"), type = "character", help = "output directory for files"),
+  make_option(c("--plots_dir"), type = "character", help = "output directory for plots")
 )
 opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
 mat <- opt$mat
@@ -51,8 +47,7 @@ rna_seq_tpm <- rna_seq_tpm %>%
 
 # Create an expression set
 phenoData <- new("AnnotatedDataFrame", data = lgg_clusters)
-eset <- Biobase::ExpressionSet(assayData = as.matrix(rna_seq_tpm),
-                               phenoData = phenoData)
+eset <- Biobase::ExpressionSet(assayData = as.matrix(rna_seq_tpm), phenoData = phenoData)
 
 # Use getGmt() function to read the file
 immunesigdb <- msigdbr(category = "C7", subcategory = "IMMUNESIGDB")
@@ -73,7 +68,7 @@ save(gsva_result,
 
 # Differential expression analysis
 design <-
-  model.matrix( ~ factor(pData(gsva_result)$cluster_assigned))
+  model.matrix(~ factor(pData(gsva_result)$cluster_assigned))
 colnames(design) <- c("cluster1", "cluster2", "cluster3")
 fit <- limma::lmFit(exprs(gsva_result), design)
 fit <- limma::eBayes(fit)
@@ -88,7 +83,7 @@ tt <- topTable(fit,
                adjust.method = "BH",
                sort.by = "B")
 DEpwys <- rownames(tt)
-DEpwys_es <- exprs(gsva_result[DEpwys,])
+DEpwys_es <- exprs(gsva_result[DEpwys, ])
 
 lgg_clusters <-
   lgg_clusters %>% arrange(as.factor(cluster_assigned))

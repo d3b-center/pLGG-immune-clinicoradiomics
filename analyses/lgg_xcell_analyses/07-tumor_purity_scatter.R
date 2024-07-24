@@ -9,12 +9,9 @@ suppressPackageStartupMessages({
 
 # parse arguments
 option_list <- list(
-  make_option(c("--mat"), type = "character",
-              help = "input matrix (.rds)"),
-  make_option(c("--histology"), type = "character",
-              help = "histology file (.tsv)"),
-  make_option(c("--plots_dir"), type = "character",
-              help = "output directory for plots")
+  make_option(c("--mat"), type = "character", help = "input matrix (.rds)"),
+  make_option(c("--histology"), type = "character", help = "histology file (.tsv)"),
+  make_option(c("--plots_dir"), type = "character", help = "output directory for plots")
 )
 opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
 mat <- opt$mat
@@ -75,10 +72,12 @@ joined_data <- selected_data %>%
             by = c("sample_id"),
             suffix = c("", ".filtered"))
 
-joined_data <- joined_data %>% 
+joined_data <- joined_data %>%
   dplyr::group_by(sample_id) %>%
-  dplyr::summarise(mean_tumor_fraction = mean(tumor_fraction, na.rm = T),
-                   mean_immune_score = mean(immune_score, na.rm = T))
+  dplyr::summarise(
+    mean_tumor_fraction = mean(tumor_fraction, na.rm = T),
+    mean_immune_score = mean(immune_score, na.rm = T)
+  )
 
 joined_data <- joined_data %>%
   filter(!is.na(mean_tumor_fraction))
@@ -126,10 +125,12 @@ joined_data <- selected_data %>%
             by = "sample_id",
             suffix = c("", ".filtered"))
 
-joined_data <- joined_data %>% 
+joined_data <- joined_data %>%
   dplyr::group_by(sample_id) %>%
-  dplyr::mutate(mean_tumor_fraction_RFpurify_ABSOLUTE = mean(tumor_fraction_RFpurify_ABSOLUTE, na.rm = T),
-                   mean_immune_score = mean(immune_score, na.rm = T))
+  dplyr::mutate(
+    mean_tumor_fraction_RFpurify_ABSOLUTE = mean(tumor_fraction_RFpurify_ABSOLUTE, na.rm = T),
+    mean_immune_score = mean(immune_score, na.rm = T)
+  )
 
 joined_data <- joined_data %>%
   filter(!is.na(mean_tumor_fraction_RFpurify_ABSOLUTE) &
@@ -171,10 +172,12 @@ joined_data <- selected_data %>%
             by = "sample_id",
             suffix = c("", ".filtered"))
 
-joined_data <- joined_data %>% 
+joined_data <- joined_data %>%
   dplyr::group_by(sample_id) %>%
-  dplyr::mutate(mean_tumor_fraction_RFpurify_ESTIMATE = mean(tumor_fraction_RFpurify_ESTIMATE, na.rm = T),
-                mean_immune_score = mean(immune_score, na.rm = T))
+  dplyr::mutate(
+    mean_tumor_fraction_RFpurify_ESTIMATE = mean(tumor_fraction_RFpurify_ESTIMATE, na.rm = T),
+    mean_immune_score = mean(immune_score, na.rm = T)
+  )
 
 joined_data <- joined_data %>%
   filter(!is.na(mean_tumor_fraction_RFpurify_ESTIMATE) &
@@ -217,10 +220,12 @@ joined_data <- selected_data %>%
             by = "sample_id",
             suffix = c("", ".filtered"))
 
-joined_data <- joined_data %>% 
+joined_data <- joined_data %>%
   dplyr::group_by(sample_id) %>%
-  dplyr::mutate(mean_tumor_fraction_LUMP = mean(tumor_fraction_LUMP, na.rm = T),
-                mean_immune_score = mean(immune_score, na.rm = T))
+  dplyr::mutate(
+    mean_tumor_fraction_LUMP = mean(tumor_fraction_LUMP, na.rm = T),
+    mean_immune_score = mean(immune_score, na.rm = T)
+  )
 
 joined_data <- joined_data %>%
   filter(!is.na(tumor_fraction_LUMP) &

@@ -3,6 +3,18 @@ cluster_assigned:
   "2": "#00BA38"
   "3": "#619CFF"
 
+2021_WHO_Classification:
+  "Diffuse astrocytoma, MYB- or MYBL1-altered": "#d227da"
+  "Diffuse glioneuronal tumor with oligodendroglioma-like features and nuclear clusters": "#beaed4"
+  "Diffuse low-grade glioma, MAPK pathway-altered": "#ffe135"
+  "Ganglioglioma": "#ff1493"
+  "Glioneuronal and neuronal tumors": "#21abcd"
+  "Myxoid glioneuronal tumor": "#ff8c00"
+  "Pilocytic astrocytoma": "#162e95"
+  "Pleomorphic xanthoastrocytoma": "#228b22"
+  "Subependymal giant cell astrocytoma": "#FF70AE"
+  "Pediatric-type diffuse low-grade gliomas": "#abcd21"
+
 molecular_subtype:
   # "LGG, other MAPK": "#00C0AF"
   # "LGG, NF1-germline, NF1-somatic": "#deed93" 

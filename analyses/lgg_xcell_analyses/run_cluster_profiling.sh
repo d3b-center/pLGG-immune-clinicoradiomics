@@ -14,7 +14,7 @@ cd "$script_directory" || exit
 data_dir="../../data"
 count_file="${data_dir}/20230826_release-gene-counts-rsem-expected_count.collapsed_subset.rds"
 tpm_file="${data_dir}/20230826_release-gene-expression-rsem-tpm.collapsed_subset.rds"
-histology_file="${data_dir}/20230826_release.annotated_histologies_subset.tsv"
+histology_file="${data_dir}/20230826_release.annotated_histologies.tsv"
 tmb_file="${data_dir}/snv-mutation-tmb-coding.tsv"
 tis_file="${data_dir}/tumor_inflammation_signatures.txt"
 
@@ -38,11 +38,14 @@ Rscript --vanilla 01-xcell_clustering.R \
 # generate heatmap of xcell scores annotated by molecular subtypes and clusters
 Rscript --vanilla 02-xcell_heatmap.R \
 --xcell_file "results/xcell_output/xcell_score_cluster.tsv" \
+--who_classification "${data_dir}/2024-07-10_annotated_histologies_2021_WHO_class.tsv" \
+--output_dir "results/xcell_cluster_analysis" \
 --plots_dir "plots/xcell_cluster_analysis"
 
 # generate stats between xcell clusters vs clinical variables
 Rscript --vanilla 03-xcell_cluster_analysis.R \
 --xcell_file "results/xcell_output/xcell_score_cluster.tsv" \
+--who_classification "${data_dir}/2024-07-10_annotated_histologies_2021_WHO_class.tsv" \
 --histology $histology_file \
 --tmb_file $tmb_file \
 --output_dir "results/xcell_cluster_analysis" \
@@ -51,13 +54,15 @@ Rscript --vanilla 03-xcell_cluster_analysis.R \
 # Generate radarplots for v-test scores
 Rscript --vanilla 04-vtest_plots.R \
 --vtest_scores "results/vtest_analysis/vtest_scores_all.tsv" \
+--output_dir "results/vtest_analysis" \
 --plots_dir "plots/vtest_analysis"
 
 # Compute TIS scores and generate plots
 Rscript --vanilla 05-tis_analysis.R \
 --count_file $count_file \
 --xcell_file "results/xcell_output/xcell_score_cluster.tsv" \
---tis_genes $tis_file \
+--who_classification "${data_dir}/2024-07-10_annotated_histologies_2021_WHO_class.tsv" \
+--tis_genes "${data_dir}/tumor_inflammation_signatures.txt" \
 --output_dir "results/tis_analysis" \
 --plots_dir "plots/tis_analysis"
 
