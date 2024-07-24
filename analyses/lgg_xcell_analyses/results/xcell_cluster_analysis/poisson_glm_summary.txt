@@ -1,95 +1,112 @@
 
 Call:
-glm(formula = y ~ molecular_subtype * cluster_assigned, family = poisson, 
-    data = anno_file)
-
-Deviance Residuals: 
-      Min         1Q     Median         3Q        Max  
-0.000e+00  0.000e+00  2.980e-08  7.885e-08  9.424e-08  
+glm(formula = y ~ `2021_WHO_Classification` * cluster_assigned, 
+    family = poisson, data = anno_file)
 
 Coefficients: (2 not defined because of singularities)
-                                                      Estimate Std. Error
-(Intercept)                                            3.36730    0.03448
-molecular_subtypeGNG, KIAA1549-BRAF                   -1.98100    0.25237
-molecular_subtypeGNG, wildtype                        -0.47692    0.06539
-molecular_subtypeLGG_CDKN2A/B                         -2.26868    0.33511
-molecular_subtypeLGG_IDH                              -1.75786    0.20295
-molecular_subtypeLGG_NF1                              -1.75786    0.20295
-molecular_subtypeLGG_RTK                              -0.47692    0.06539
-molecular_subtypeLGG, BRAF V600E                      -0.53408    0.06819
-molecular_subtypeLGG, KIAA1549-BRAF                   -0.37156    0.06074
-molecular_subtypeLGG, MYB/MYBL1                       -2.26868    0.33511
-molecular_subtypeLGG, other MAPK                      -1.28785    0.12967
-molecular_subtypeSEGA, wildtype                       -1.06471    0.10578
-cluster_assigned1                                     -1.28785    0.12967
-cluster_assigned2                                      0.39390    0.04159
-molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned1  0.59471    0.57386
-molecular_subtypeGNG, wildtype:cluster_assigned1      -0.50391    0.36196
-molecular_subtypeLGG_CDKN2A/B:cluster_assigned1        2.67415    0.36725
-molecular_subtypeLGG_IDH:cluster_assigned1             1.28785    0.31115
-molecular_subtypeLGG_NF1:cluster_assigned1             1.98100    0.25848
-molecular_subtypeLGG_RTK:cluster_assigned1             1.44200    0.14889
-molecular_subtypeLGG, BRAF V600E:cluster_assigned1     1.67352    0.14790
-molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned1  2.91709    0.13932
-molecular_subtypeLGG, MYB/MYBL1:cluster_assigned1           NA         NA
-molecular_subtypeLGG, other MAPK:cluster_assigned1     1.60631    0.20175
-molecular_subtypeSEGA, wildtype:cluster_assigned1      0.77703    0.23365
-molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned2 -0.68159    0.41874
-molecular_subtypeGNG, wildtype:cluster_assigned2      -2.18566    0.34048
-molecular_subtypeLGG_CDKN2A/B:cluster_assigned2       -0.10622    0.41874
-molecular_subtypeLGG_IDH:cluster_assigned2            -2.00334    1.02065
-molecular_subtypeLGG_NF1:cluster_assigned2            -0.05743    0.24928
-molecular_subtypeLGG_RTK:cluster_assigned2            -0.28854    0.08554
-molecular_subtypeLGG, BRAF V600E:cluster_assigned2    -0.33675    0.09098
-molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned2  0.72124    0.06707
-molecular_subtypeLGG, MYB/MYBL1:cluster_assigned2     -0.79937    0.60236
-molecular_subtypeLGG, other MAPK:cluster_assigned2    -0.27612    0.17234
-molecular_subtypeSEGA, wildtype:cluster_assigned2           NA         NA
-                                                      z value Pr(>|z|)    
-(Intercept)                                            97.652  < 2e-16 ***
-molecular_subtypeGNG, KIAA1549-BRAF                    -7.850 4.17e-15 ***
-molecular_subtypeGNG, wildtype                         -7.294 3.01e-13 ***
-molecular_subtypeLGG_CDKN2A/B                          -6.770 1.29e-11 ***
-molecular_subtypeLGG_IDH                               -8.661  < 2e-16 ***
-molecular_subtypeLGG_NF1                               -8.661  < 2e-16 ***
-molecular_subtypeLGG_RTK                               -7.294 3.01e-13 ***
-molecular_subtypeLGG, BRAF V600E                       -7.833 4.77e-15 ***
-molecular_subtypeLGG, KIAA1549-BRAF                    -6.118 9.50e-10 ***
-molecular_subtypeLGG, MYB/MYBL1                        -6.770 1.29e-11 ***
-molecular_subtypeLGG, other MAPK                       -9.932  < 2e-16 ***
-molecular_subtypeSEGA, wildtype                       -10.065  < 2e-16 ***
-cluster_assigned1                                      -9.932  < 2e-16 ***
-cluster_assigned2                                       9.471  < 2e-16 ***
-molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned1   1.036 0.300048    
-molecular_subtypeGNG, wildtype:cluster_assigned1       -1.392 0.163869    
-molecular_subtypeLGG_CDKN2A/B:cluster_assigned1         7.282 3.30e-13 ***
-molecular_subtypeLGG_IDH:cluster_assigned1              4.139 3.49e-05 ***
-molecular_subtypeLGG_NF1:cluster_assigned1              7.664 1.80e-14 ***
-molecular_subtypeLGG_RTK:cluster_assigned1              9.685  < 2e-16 ***
-molecular_subtypeLGG, BRAF V600E:cluster_assigned1     11.315  < 2e-16 ***
-molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned1  20.938  < 2e-16 ***
-molecular_subtypeLGG, MYB/MYBL1:cluster_assigned1          NA       NA    
-molecular_subtypeLGG, other MAPK:cluster_assigned1      7.962 1.70e-15 ***
-molecular_subtypeSEGA, wildtype:cluster_assigned1       3.326 0.000882 ***
-molecular_subtypeGNG, KIAA1549-BRAF:cluster_assigned2  -1.628 0.103585    
-molecular_subtypeGNG, wildtype:cluster_assigned2       -6.419 1.37e-10 ***
-molecular_subtypeLGG_CDKN2A/B:cluster_assigned2        -0.254 0.799748    
-molecular_subtypeLGG_IDH:cluster_assigned2             -1.963 0.049668 *  
-molecular_subtypeLGG_NF1:cluster_assigned2             -0.230 0.817784    
-molecular_subtypeLGG_RTK:cluster_assigned2             -3.373 0.000743 ***
-molecular_subtypeLGG, BRAF V600E:cluster_assigned2     -3.702 0.000214 ***
-molecular_subtypeLGG, KIAA1549-BRAF:cluster_assigned2  10.753  < 2e-16 ***
-molecular_subtypeLGG, MYB/MYBL1:cluster_assigned2      -1.327 0.184490    
-molecular_subtypeLGG, other MAPK:cluster_assigned2     -1.602 0.109111    
-molecular_subtypeSEGA, wildtype:cluster_assigned2          NA       NA    
+                                                                                          Estimate
+(Intercept)                                                                                3.29584
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                       -1.68640
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    0.90886
+`2021_WHO_Classification`Ganglioglioma                                                    -0.20479
+`2021_WHO_Classification`Pilocytic astrocytoma                                            -0.73089
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                              -0.89794
+cluster_assigned1                                                                         -0.81093
+cluster_assigned2                                                                         -1.09861
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1           NA
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  1.77672
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  -0.33420
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                           0.32542
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1             0.35895
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2      0.18232
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  1.74595
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  -1.29928
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           1.86587
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                  NA
+                                                                                          Std. Error
+(Intercept)                                                                                  0.03704
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                          0.20340
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                      0.03993
+`2021_WHO_Classification`Ganglioglioma                                                       0.05863
+`2021_WHO_Classification`Pilocytic astrocytoma                                               0.08538
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                                 0.09816
+cluster_assigned1                                                                            0.09119
+cluster_assigned2                                                                            0.11712
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1             NA
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1    0.09258
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                     0.17547
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                             0.17280
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1               0.19232
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2        0.55111
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2    0.11833
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                     0.51554
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                             0.14460
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                    NA
+                                                                                          z value
+(Intercept)                                                                                88.988
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                        -8.291
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    22.760
+`2021_WHO_Classification`Ganglioglioma                                                     -3.493
+`2021_WHO_Classification`Pilocytic astrocytoma                                             -8.561
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                               -9.147
+cluster_assigned1                                                                          -8.892
+cluster_assigned2                                                                          -9.380
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1          NA
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  19.191
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                   -1.905
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                            1.883
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1              1.866
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2       0.331
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  14.755
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                   -2.520
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           12.903
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                 NA
+                                                                                          Pr(>|z|)
+(Intercept)                                                                                < 2e-16
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                        < 2e-16
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    < 2e-16
+`2021_WHO_Classification`Ganglioglioma                                                    0.000478
+`2021_WHO_Classification`Pilocytic astrocytoma                                             < 2e-16
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                               < 2e-16
+cluster_assigned1                                                                          < 2e-16
+cluster_assigned2                                                                          < 2e-16
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1           NA
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  < 2e-16
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  0.056834
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                          0.059663
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            0.061993
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2     0.740774
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  < 2e-16
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  0.011728
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           < 2e-16
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                  NA
+                                                                                             
+(Intercept)                                                                               ***
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                       ***
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                   ***
+`2021_WHO_Classification`Ganglioglioma                                                    ***
+`2021_WHO_Classification`Pilocytic astrocytoma                                            ***
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                              ***
+cluster_assigned1                                                                         ***
+cluster_assigned2                                                                         ***
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1        
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1 ***
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  .  
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                          .  
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            .  
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2        
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2 ***
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  *  
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                          ***
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2               
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 1.4665e+04  on 515  degrees of freedom
-Residual deviance: 4.9427e-13  on 482  degrees of freedom
-AIC: 2706.5
+    Null deviance: 2.6464e+04  on 523  degrees of freedom
+Residual deviance: 1.7251e-12  on 508  degrees of freedom
+AIC: 3224.8
 
 Number of Fisher Scoring iterations: 3
 

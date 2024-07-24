@@ -1,0 +1,16 @@
+cell_type	cluster	v_score
+Cancer associated fibroblast	1	0.532374747529765
+stroma score	1	0.4888842412902802
+Eosinophil	1	0.44922495437545445
+Class-switched memory B cell	1	0.426901885918221
+microenvironment score	1	0.3814819878661407
+Common lymphoid progenitor	2	0.5228016481618976
+T cell CD4+ memory	2	0.44990568407251896
+T cell CD8+ naive	2	0.3088575880998829
+T cell CD4+ effector memory	2	0.3073031672003627
+Macrophage	2	0.3046760748939321
+Hematopoietic stem cell	3	0.5873286251864442
+T cell CD8+ naive	3	0.21121759075556645
+T cell regulatory (Tregs)	3	0.0975092364588858
+NK cell	3	0.06526324952648935
+T cell CD4+ (non-regulatory)	3	0.06487622737114046
