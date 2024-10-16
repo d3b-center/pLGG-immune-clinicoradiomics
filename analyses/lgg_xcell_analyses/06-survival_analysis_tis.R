@@ -33,8 +33,7 @@ tis_scores <- tis_scores %>%
 
 # map cohort participant id to biospecimen from histology
 histology_df <-
-  file.path(data_dir,
-            '20230826_release.annotated_histologies_subset.tsv') %>% fread()
+  file.path(data_dir, '20230826_release.annotated_histologies.tsv') %>% fread()
 histology_df <- histology_df %>%
   dplyr::select(
     Kids_First_Participant_ID,
@@ -57,7 +56,14 @@ survival_data <- tis_scores %>%
   inner_join(histology_df, by = "Kids_First_Biospecimen_ID")
 
 survival_data <- survival_data %>%
-  unique(by = 'Kids_First_Participant_ID')
+  unique(by = 'Kids_First_Participant_ID') %>%
+  dplyr::mutate(
+    `2021_WHO_Classification` = ifelse(
+      `2021_WHO_Classification` == 'N/A',
+      'Pediatric-type diffuse low-grade gliomas, NOS',
+      `2021_WHO_Classification`
+    )
+  )
 
 # code a EFS_status column with the following logic:
 survival_data <- survival_data %>%
@@ -145,17 +151,38 @@ survival_plot <- ggsurvplot(
 print(survival_plot)
 dev.off()
 
-# Fit the Cox model with OS- get a convergence warning due to limited iteration..checked with max iter but same warning message
+# Fit the Cox model with OS
 
-res_cox <- coxph(Surv(OS_days, OS_status) ~ molecular_subtype +
+survival_data <- survival_data %>%
+  dplyr::mutate(tis_score_group = as.factor(tis_score_group)) %>%
+  dplyr::mutate(tis_score_group = relevel(tis_score_group, ref = 'Low'))
+
+survival_data_groups <- survival_data %>%
+  dplyr::group_by(`2021_WHO_Classification`) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n > 2) %>%
+  dplyr::pull(`2021_WHO_Classification`)
+
+survival_data <- survival_data %>%
+  dplyr::filter(`2021_WHO_Classification` %in% survival_data_groups) %>%
+  dplyr::mutate(`2021_WHO_Classification` = as.factor(`2021_WHO_Classification`)) %>%
+  dplyr::mutate(
+    `2021_WHO_Classification` = relevel(`2021_WHO_Classification`, ref = 'Pediatric-type diffuse low-grade gliomas, NOS')
+  )
+
+res_cox <- coxph(Surv(OS_days, OS_status) ~ 
                    tis_score_group,
                  data = survival_data)
 
-pdf(file = file.path(plots_dir, "KM_OS_forestplot_lgg_tis.pdf"),
-    onefile = FALSE)
+pdf(
+  file = file.path(plots_dir, "KM_OS_forestplot_lgg_tis.pdf"),
+  height = 8,
+  width = 13,
+  onefile = FALSE
+)
 forest_model(
   res_cox,
-  covariates = c('tis_score_group'),
+  covariates = c('tis_score_group', '`2021_WHO_Classification`'),
   exponentiate = F,
   limits = log(c(.5, 50))
 )
@@ -169,22 +196,22 @@ write.table(
   col.names = NA
 )
 
-# Fit the Cox model with EFS- get a convergence warning due to limited iteration..checked with max iter but same warning message
+# Fit the Cox model with EFS
 
 res_cox <-
-  coxph(Surv(EFS_days, EFS_status) ~ molecular_subtype +
+  coxph(Surv(EFS_days, EFS_status) ~ `2021_WHO_Classification` +
           tis_score_group,
         data = survival_data)
 
 pdf(
   file = file.path(plots_dir, "KM_EFS_forestplot_lgg_tis.pdf"),
   height = 8,
-  width = 10,
+  width = 13,
   onefile = FALSE
 )
 forest_model(
   res_cox,
-  covariates = c('tis_score_group'),
+  covariates = c('tis_score_group', '`2021_WHO_Classification`'),
   exponentiate = F,
   limits = log(c(.5, 50))
 )

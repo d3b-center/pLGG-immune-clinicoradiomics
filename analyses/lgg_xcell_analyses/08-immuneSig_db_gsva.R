@@ -13,10 +13,14 @@ suppressPackageStartupMessages({
 
 # parse arguments
 option_list <- list(
-  make_option(c("--mat"), type = "character", help = "gene expression matrix preferably TPM (.rds)"),
-  make_option(c("--xcell_file"), type = "character", help = "xcell score + cluster file (.tsv)"),
-  make_option(c("--output_dir"), type = "character", help = "output directory for files"),
-  make_option(c("--plots_dir"), type = "character", help = "output directory for plots")
+  make_option(c("--mat"), type = "character",
+              help = "gene expression matrix preferably TPM (.rds)"),
+  make_option(c("--xcell_file"), type = "character",
+              help = "xcell score + cluster file (.tsv)"),
+  make_option(c("--output_dir"), type = "character",
+              help = "output directory for files"),
+  make_option(c("--plots_dir"), type = "character",
+              help = "output directory for plots")
 )
 opt <- parse_args(OptionParser(option_list = option_list, add_help_option = TRUE))
 mat <- opt$mat
@@ -47,7 +51,8 @@ rna_seq_tpm <- rna_seq_tpm %>%
 
 # Create an expression set
 phenoData <- new("AnnotatedDataFrame", data = lgg_clusters)
-eset <- Biobase::ExpressionSet(assayData = as.matrix(rna_seq_tpm), phenoData = phenoData)
+eset <- Biobase::ExpressionSet(assayData = as.matrix(rna_seq_tpm),
+                               phenoData = phenoData)
 
 # Use getGmt() function to read the file
 immunesigdb <- msigdbr(category = "C7", subcategory = "IMMUNESIGDB")
@@ -55,20 +60,26 @@ immunesigdb <- immunesigdb %>% dplyr::select(gs_name, human_gene_symbol)
 immunesigdb <- base::split(immunesigdb$human_gene_symbol, list(immunesigdb$gs_name))
 
 # GSVA analysis (took ~5hrs to calculate absolute values from ranks)
-gsva_result <-
-  GSVA::gsva(
-    eset,
-    immunesigdb,
-    method = "ssgsea",
-    min.sz = 20,
-    max.sz = 500
-  )
+gsvapar <- GSVA::ssgseaParam(exprData = eset,
+                             geneSets = immunesigdb,
+                             minSize = 20,
+                             maxSize = 500,
+                             normalize = FALSE)
+gsva_result <- GSVA::gsva(gsvapar)
+# gsva_result <-
+#   GSVA::gsva(
+#     eset,
+#     immunesigdb,
+#     method = "ssgsea",
+#     min.sz = 20,
+#     max.sz = 500
+#   )
 save(gsva_result,
      file = file.path(output_dir, "gsva_igg_cluster_result.RData"))
 
 # Differential expression analysis
 design <-
-  model.matrix(~ factor(pData(gsva_result)$cluster_assigned))
+  model.matrix( ~ factor(pData(gsva_result)$cluster_assigned))
 colnames(design) <- c("cluster1", "cluster2", "cluster3")
 fit <- limma::lmFit(exprs(gsva_result), design)
 fit <- limma::eBayes(fit)
@@ -83,7 +94,7 @@ tt <- topTable(fit,
                adjust.method = "BH",
                sort.by = "B")
 DEpwys <- rownames(tt)
-DEpwys_es <- exprs(gsva_result[DEpwys, ])
+DEpwys_es <- exprs(gsva_result[DEpwys,])
 
 lgg_clusters <-
   lgg_clusters %>% arrange(as.factor(cluster_assigned))

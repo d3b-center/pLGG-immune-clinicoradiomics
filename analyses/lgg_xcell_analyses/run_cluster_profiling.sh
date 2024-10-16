@@ -62,7 +62,7 @@ Rscript --vanilla 05-tis_analysis.R \
 --count_file $count_file \
 --xcell_file "results/xcell_output/xcell_score_cluster.tsv" \
 --who_classification "${data_dir}/2024-07-10_annotated_histologies_2021_WHO_class.tsv" \
---tis_genes "${data_dir}/tumor_inflammation_signatures.txt" \
+--tis_genes $tis_file \
 --output_dir "results/tis_analysis" \
 --plots_dir "plots/tis_analysis"
 
