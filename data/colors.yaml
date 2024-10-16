@@ -13,7 +13,7 @@ cluster_assigned:
   "Pilocytic astrocytoma": "#162e95"
   "Pleomorphic xanthoastrocytoma": "#228b22"
   "Subependymal giant cell astrocytoma": "#FF70AE"
-  "Pediatric-type diffuse low-grade gliomas": "#abcd21"
+  "Pediatric-type diffuse low-grade gliomas, NOS": "#abcd21"
 
 molecular_subtype:
   # "LGG, other MAPK": "#00C0AF"

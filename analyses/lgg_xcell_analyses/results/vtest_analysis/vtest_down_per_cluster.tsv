@@ -1,16 +1,16 @@
 cell_type	cluster	v_score
-T cell CD4+ memory	1	-0.27653455873359567
-T cell CD4+ Th1	1	-0.2793356643887387
-Hematopoietic stem cell	1	-0.3586506923471374
-T cell CD8+ naive	1	-0.4575163071863969
-Common lymphoid progenitor	1	-0.4842888978786159
-Class-switched memory B cell	2	-0.2657547345245131
-Eosinophil	2	-0.28539180230421946
-stroma score	2	-0.3263652895123558
-T cell regulatory (Tregs)	2	-0.3348007694216132
-Cancer associated fibroblast	2	-0.35483306095032074
+T cell CD4+ memory	1	-0.276534558733595
+T cell CD4+ Th1	1	-0.2793356643887388
+Hematopoietic stem cell	1	-0.3586506923471375
+T cell CD8+ naive	1	-0.45751630718639746
+Common lymphoid progenitor	1	-0.4842888978786161
+Class-switched memory B cell	2	-0.2657547345245132
+Eosinophil	2	-0.2853918023042196
+stroma score	2	-0.32636528951235577
+T cell regulatory (Tregs)	2	-0.33480076942161374
+Cancer associated fibroblast	2	-0.35483306095032097
 Myeloid dendritic cell activated	3	-0.3510527003958551
-Monocyte	3	-0.4093707587252228
-immune score	3	-0.4154865591423054
-Macrophage M1	3	-0.417106056152013
-microenvironment score	3	-0.4364971462931279
+Monocyte	3	-0.409370758725223
+immune score	3	-0.4154865591423056
+Macrophage M1	3	-0.4171060561520129
+microenvironment score	3	-0.4364971462931281

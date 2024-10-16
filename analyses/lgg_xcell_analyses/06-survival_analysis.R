@@ -63,7 +63,7 @@ histology_df <- histology_df %>%
   dplyr::mutate(
     `2021_WHO_Classification` = ifelse(
       `2021_WHO_Classification` == 'N/A',
-      'Pediatric-type diffuse low-grade gliomas',
+      'Pediatric-type diffuse low-grade gliomas, NOS',
       `2021_WHO_Classification`
     )
   )
@@ -194,12 +194,18 @@ survival_data_complete <- survival_data_complete %>%
   dplyr::filter(`2021_WHO_Classification` %in% survival_data_groups) %>%
   dplyr::mutate(`2021_WHO_Classification` = as.factor(`2021_WHO_Classification`)) %>%
   dplyr::mutate(
-    `2021_WHO_Classification` = relevel(`2021_WHO_Classification`, ref = 'Pediatric-type diffuse low-grade gliomas')
+    `2021_WHO_Classification` = relevel(`2021_WHO_Classification`, ref = 'Pediatric-type diffuse low-grade gliomas, NOS')
   )
 
-res_cox <- survival::coxph(Surv(OS_days, OS_status) ~ age_at_diagnosis_days +
-                             reported_gender +
-                             clusterID,
+survival_data_complete <- survival_data_complete %>%
+  dplyr::rename("Age at diagnosis (Days)" = age_at_diagnosis_days, #this variable is a numeric -> label works
+                "Biological Sex" = reported_gender, # factor -> label doesn't work!
+                "Immune Cluster" = clusterID  # numeric -> label works...
+  )
+
+res_cox <- survival::coxph(Surv(OS_days, OS_status) ~ `Age at diagnosis (Days)` +
+                             `Biological Sex` +
+                             `Immune Cluster`,
                            data = survival_data_complete)
 
 pdf(
@@ -209,7 +215,7 @@ pdf(
 )
 forest_model(
   res_cox,
-  covariates = c('clusterID', 'age_at_diagnosis_days', 'reported_gender'),
+  covariates = c('`Age at diagnosis (Days)`', '`Biological Sex`', '`Immune Cluster`'),
   exponentiate = T,
   limits = log(c(.5, 50)),
   exclude_infinite_cis = TRUE
@@ -228,9 +234,12 @@ write.table(
 
 res_cox <-
   survival::coxph(
-    Surv(EFS_days, EFS_status) ~ age_at_diagnosis_days +
-      reported_gender + race + CNS_region + `2021_WHO_Classification` +
-      clusterID,
+    Surv(EFS_days, EFS_status) ~ `Age at diagnosis (Days)` +
+      `Biological Sex` +
+      `Immune Cluster` +
+      race + 
+      CNS_region + 
+      `2021_WHO_Classification`,
     data = survival_data_complete
   )
 
@@ -242,12 +251,7 @@ pdf(
 )
 forest_model(
   res_cox,
-  covariates = c(
-    'clusterID',
-    'age_at_diagnosis_days',
-    'reported_gender',
-    '`2021_WHO_Classification`'
-  ),
+  covariates = c('`Age at diagnosis (Days)`', '`Biological Sex`', '`Immune Cluster`','`2021_WHO_Classification`'),
   exponentiate = T,
   limits = log(c(.5, 50))
 )

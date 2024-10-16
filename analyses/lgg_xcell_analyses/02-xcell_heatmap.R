@@ -38,14 +38,14 @@ xcell_score <- xcell_score %>%
 mol_subtypes_to_use <- xcell_score %>%
   dplyr::select(Kids_First_Biospecimen_ID, molecular_subtype) %>%
   unique() %>%
-  group_by(molecular_subtype) %>%
-  summarise(n = n()) %>%
-  filter(n >= 5) %>%
-  pull(molecular_subtype)
+  dplyr::group_by(molecular_subtype) %>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::filter(n >= 5) %>% 
+  dplyr::pull(molecular_subtype)
+
 
 # filter to selected molecular subtypes and create a wide format
 xcell_spread <- xcell_score %>%
-  filter(molecular_subtype %in% mol_subtypes_to_use) %>%
   dplyr::select(Kids_First_Biospecimen_ID, cell_type, fraction) %>%
   tidyr::spread(key = cell_type, value = fraction) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID") %>%
@@ -54,16 +54,11 @@ xcell_spread <- xcell_score %>%
 
 # arrange the annotation file based on the cluster column
 xcell_score$cluster_assigned <- as.factor(xcell_score$cluster_assigned)
-anno_file <- xcell_score %>%
-  filter(molecular_subtype %in% mol_subtypes_to_use) %>%
-  dplyr::select(Kids_First_Biospecimen_ID,
-                `2021_WHO_Classification`,
-                # molecular_subtype,
-                cluster_assigned) %>%
+anno_file <- xcell_score %>% 
+  dplyr::select(Kids_First_Biospecimen_ID, `2021_WHO_Classification`, cluster_assigned) %>%
   ungroup() %>%
-  distinct() %>%
-  arrange(cluster_assigned, #molecular_subtype,
-          `2021_WHO_Classification`) %>%
+  distinct() %>% 
+  arrange(cluster_assigned, `2021_WHO_Classification`) %>%
   tibble::column_to_rownames("Kids_First_Biospecimen_ID")
 
 # arrange the score matrix to match the anno file
@@ -84,8 +79,7 @@ anno_colors <- lapply(anno_colors, function(x)
 anno_colors$`2021_WHO_Classification` <- anno_colors$`2021_WHO_Classification`[names(anno_colors$`2021_WHO_Classification`) %in% anno_file$`2021_WHO_Classification`]
 
 # write out xcell input file for reproducibility
-write_tsv(xcell_spread %>% rownames_to_column(" "),
-          file = file.path(output_dir, "xcell_heatmap.tsv"))
+write_tsv(xcell_spread %>% rownames_to_column(" "), file = file.path(output_dir, "xcell_heatmap.tsv"))
 
 # generate heatmap
 pheatmap::pheatmap(

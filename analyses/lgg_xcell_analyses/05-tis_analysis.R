@@ -120,14 +120,9 @@ mol_subtypes_to_use <- sample_cluster %>%
   pull(molecular_subtype)
 
 sample_cluster <- sample_cluster %>%
-  filter(molecular_subtype %in% mol_subtypes_to_use) %>%
-  dplyr::select(Kids_First_Biospecimen_ID,
-                `2021_WHO_Classification`,
-                # molecular_subtype,
-                cluster_assigned) %>%
-  arrange(cluster_assigned, # molecular_subtype,
-          `2021_WHO_Classification`) %>%
-  filter(Kids_First_Biospecimen_ID %in% colnames(count.norm))
+  dplyr::select(Kids_First_Biospecimen_ID, `2021_WHO_Classification`, cluster_assigned) %>%
+  dplyr::arrange(cluster_assigned, `2021_WHO_Classification`) %>%
+  dplyr::filter(Kids_First_Biospecimen_ID %in% colnames(count.norm))
 count.norm <- count.norm %>%
   dplyr::select(sample_cluster$Kids_First_Biospecimen_ID)
 sample_cluster$cluster_assigned <- as.character(sample_cluster$cluster_assigned)
@@ -163,11 +158,17 @@ write_tsv(
   file = file.path(output_dir, "TIS_heatmap_quantile_norm.tsv")
 )
 
+# italicize gene names 
+newnames <- lapply(
+  rownames(count.norm),
+  function(x) bquote(italic(.(x))))
+
 # generate heatmap (quantile normalized)
 pheatmap(
   mat = as.matrix(count.norm),
   cellheight = 14,
   fontsize = 10,
+  labels_row = as.expression(newnames),
   color = bluered(256),
   annotation_col = sample_cluster %>%
     column_to_rownames("Kids_First_Biospecimen_ID"),
@@ -187,46 +188,3 @@ pheatmap(
   height = 10
 )
 
-# # calculate z-scores
-# get_zscore <- function(x) {
-#   x <- log2(x + 1)
-#   out <- (x - mean(x)) / sd(x)
-#   return(out)
-# }
-# gene_count <- gene_count %>%
-#   rownames_to_column("gene") %>%
-#   filter(gene %in% tis_genes$Genes) %>%
-#   column_to_rownames("gene") %>%
-#   dplyr::select(sample_cluster$Kids_First_Biospecimen_ID)
-# gene_count_zscore <- t(apply(gene_count, MARGIN = 1, FUN = get_zscore))
-# rownames(gene_count_zscore) <- total$gene
-#
-# # write out heatmap input for reproducibility
-# write_tsv(
-#   gene_count_zscore %>% as.data.frame %>% rownames_to_column(" "),
-#   file = file.path(output_dir, "TIS_heatmap_zscore.tsv")
-# )
-#
-# # generate heatmap (z-scores)
-# pheatmap(
-#   mat = as.matrix(gene_count_zscore),
-#   cellheight = 14,
-#   fontsize = 10,
-#   color = bluered(256),
-#   annotation_col = sample_cluster %>%
-#     column_to_rownames("Kids_First_Biospecimen_ID"),
-#   annotation_colors = anno_colors,
-#   cluster_cols = F,
-#   scale = "none",
-#   show_colnames = F,
-#   silent = T,
-#   main = paste0(
-#     "Tumor Inflammation Signature\n Samples = ",
-#     ncol(gene_count_zscore),
-#     " | Genes = ",
-#     nrow(gene_count_zscore)
-#   ),
-#   filename = file.path(plots_dir, "TIS_heatmap_zscore.pdf"),
-#   width = 15,
-#   height = 10
-# )

@@ -3,100 +3,130 @@ Call:
 glm(formula = y ~ `2021_WHO_Classification` * cluster_assigned, 
     family = poisson, data = anno_file)
 
-Coefficients: (2 not defined because of singularities)
+Coefficients: (3 not defined because of singularities)
                                                                                           Estimate
-(Intercept)                                                                                3.29584
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                       -1.68640
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    0.90886
-`2021_WHO_Classification`Ganglioglioma                                                    -0.20479
-`2021_WHO_Classification`Pilocytic astrocytoma                                            -0.73089
-`2021_WHO_Classification`Subependymal giant cell astrocytoma                              -0.89794
-cluster_assigned1                                                                         -0.81093
-cluster_assigned2                                                                         -1.09861
+(Intercept)                                                                                3.36730
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                       -1.75786
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    0.32158
+`2021_WHO_Classification`Ganglioglioma                                                    -0.14842
+`2021_WHO_Classification`Glioneuronal and neuronal tumors                                 -2.26868
+`2021_WHO_Classification`Myxoid glioneuronal tumor                                        -0.82668
+`2021_WHO_Classification`Pilocytic astrocytoma                                             0.15906
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                              -0.96940
+cluster_assigned1                                                                          0.24362
+cluster_assigned2                                                                         -0.59471
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1           NA
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  1.77672
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  -0.33420
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                           0.32542
-`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1             0.35895
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2      0.18232
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  1.74595
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  -1.29928
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           1.86587
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  0.25715
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  -1.26527
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned1               -1.34223
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned1                      -1.17480
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                           0.67267
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            -0.69561
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2     -0.32158
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  0.69002
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  -1.23787
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned2               -0.50391
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned2                            NA
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           1.66347
 `2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                  NA
                                                                                           Std. Error
-(Intercept)                                                                                  0.03704
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                          0.20340
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                      0.03993
-`2021_WHO_Classification`Ganglioglioma                                                       0.05863
-`2021_WHO_Classification`Pilocytic astrocytoma                                               0.08538
-`2021_WHO_Classification`Subependymal giant cell astrocytoma                                 0.09816
-cluster_assigned1                                                                            0.09119
-cluster_assigned2                                                                            0.11712
+(Intercept)                                                                                  0.03448
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                          0.20295
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                      0.04259
+`2021_WHO_Classification`Ganglioglioma                                                       0.05281
+`2021_WHO_Classification`Glioneuronal and neuronal tumors                                    0.33511
+`2021_WHO_Classification`Myxoid glioneuronal tumor                                           0.15593
+`2021_WHO_Classification`Pilocytic astrocytoma                                               0.04532
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                                 0.09723
+cluster_assigned1                                                                            0.04381
+cluster_assigned2                                                                            0.07138
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1             NA
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1    0.09258
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                     0.17547
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                             0.17280
-`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1               0.19232
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2        0.55111
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2    0.11833
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                     0.51554
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                             0.14460
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1    0.05267
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                     0.12596
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned1                  1.05500
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned1                         0.25504
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                             0.05406
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1               0.17491
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2        0.54323
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2    0.07897
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                     0.26305
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned2                  1.05650
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned2                              NA
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                             0.07786
 `2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                    NA
                                                                                           z value
-(Intercept)                                                                                88.988
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                        -8.291
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    22.760
-`2021_WHO_Classification`Ganglioglioma                                                     -3.493
-`2021_WHO_Classification`Pilocytic astrocytoma                                             -8.561
-`2021_WHO_Classification`Subependymal giant cell astrocytoma                               -9.147
-cluster_assigned1                                                                          -8.892
-cluster_assigned2                                                                          -9.380
+(Intercept)                                                                                97.652
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                        -8.661
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                     7.550
+`2021_WHO_Classification`Ganglioglioma                                                     -2.810
+`2021_WHO_Classification`Glioneuronal and neuronal tumors                                  -6.770
+`2021_WHO_Classification`Myxoid glioneuronal tumor                                         -5.302
+`2021_WHO_Classification`Pilocytic astrocytoma                                              3.510
+`2021_WHO_Classification`Subependymal giant cell astrocytoma                               -9.970
+cluster_assigned1                                                                           5.561
+cluster_assigned2                                                                          -8.331
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1          NA
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  19.191
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                   -1.905
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                            1.883
-`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1              1.866
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2       0.331
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  14.755
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                   -2.520
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           12.903
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1   4.882
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  -10.045
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned1                -1.272
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned1                       -4.606
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                           12.442
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1             -3.977
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2      -0.592
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2   8.737
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                   -4.706
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned2                -0.477
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned2                           NA
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           21.364
 `2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                 NA
                                                                                           Pr(>|z|)
 (Intercept)                                                                                < 2e-16
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                        < 2e-16
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                    < 2e-16
-`2021_WHO_Classification`Ganglioglioma                                                    0.000478
-`2021_WHO_Classification`Pilocytic astrocytoma                                             < 2e-16
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                   4.34e-14
+`2021_WHO_Classification`Ganglioglioma                                                    0.004948
+`2021_WHO_Classification`Glioneuronal and neuronal tumors                                 1.29e-11
+`2021_WHO_Classification`Myxoid glioneuronal tumor                                        1.15e-07
+`2021_WHO_Classification`Pilocytic astrocytoma                                            0.000449
 `2021_WHO_Classification`Subependymal giant cell astrocytoma                               < 2e-16
-cluster_assigned1                                                                          < 2e-16
+cluster_assigned1                                                                         2.69e-08
 cluster_assigned2                                                                          < 2e-16
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1           NA
-`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1  < 2e-16
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  0.056834
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                          0.059663
-`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            0.061993
-`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2     0.740774
+`2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1 1.05e-06
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                   < 2e-16
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned1               0.203280
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned1                      4.10e-06
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                           < 2e-16
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            6.98e-05
+`2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2     0.553859
 `2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2  < 2e-16
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  0.011728
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  2.53e-06
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned2               0.633393
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned2                            NA
 `2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                           < 2e-16
 `2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2                  NA
                                                                                              
 (Intercept)                                                                               ***
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered                       ***
 `2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered                   ***
-`2021_WHO_Classification`Ganglioglioma                                                    ***
+`2021_WHO_Classification`Ganglioglioma                                                    ** 
+`2021_WHO_Classification`Glioneuronal and neuronal tumors                                 ***
+`2021_WHO_Classification`Myxoid glioneuronal tumor                                        ***
 `2021_WHO_Classification`Pilocytic astrocytoma                                            ***
 `2021_WHO_Classification`Subependymal giant cell astrocytoma                              ***
 cluster_assigned1                                                                         ***
 cluster_assigned2                                                                         ***
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned1        
 `2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned1 ***
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  .  
-`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                          .  
-`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            .  
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned1                                  ***
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned1                  
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned1                      ***
+`2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned1                          ***
+`2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned1            ***
 `2021_WHO_Classification`Diffuse astrocytoma, MYB- or MYBL1-altered:cluster_assigned2        
 `2021_WHO_Classification`Diffuse low-grade glioma, MAPK pathway-altered:cluster_assigned2 ***
-`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  *  
+`2021_WHO_Classification`Ganglioglioma:cluster_assigned2                                  ***
+`2021_WHO_Classification`Glioneuronal and neuronal tumors:cluster_assigned2                  
+`2021_WHO_Classification`Myxoid glioneuronal tumor:cluster_assigned2                         
 `2021_WHO_Classification`Pilocytic astrocytoma:cluster_assigned2                          ***
 `2021_WHO_Classification`Subependymal giant cell astrocytoma:cluster_assigned2               
 ---
@@ -104,9 +134,9 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 (Dispersion parameter for poisson family taken to be 1)
 
-    Null deviance: 2.6464e+04  on 523  degrees of freedom
-Residual deviance: 1.7251e-12  on 508  degrees of freedom
-AIC: 3224.8
+    Null deviance: 1.0323e+04  on 529  degrees of freedom
+Residual deviance: 1.0014e-12  on 509  degrees of freedom
+AIC: 3018.4
 
 Number of Fisher Scoring iterations: 3
 

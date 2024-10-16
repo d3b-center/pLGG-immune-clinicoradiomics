@@ -1,118 +1,118 @@
 cell_type	cluster	v_score
-B cell	1	0.13548352054128798
-B cell	2	0.12107428941685844
-B cell	3	-0.2914459360531249
-B cell memory	1	-0.07290069347257358
-B cell memory	2	0.20799514815662973
-B cell memory	3	-0.13735058604581907
-B cell naive	1	-0.02391590033128418
-B cell naive	2	0.07777297418283552
-B cell naive	3	-0.05533151853789765
-B cell plasma	1	0.06901319864144927
-B cell plasma	2	0.025054063852502768
-B cell plasma	3	-0.10901948991825333
-Cancer associated fibroblast	1	0.532374747529765
-Cancer associated fibroblast	2	-0.35483306095032074
+B cell	1	0.13548352054128832
+B cell	2	0.12107428941685917
+B cell	3	-0.29144593605312585
+B cell memory	1	-0.07290069347257405
+B cell memory	2	0.20799514815663075
+B cell memory	3	-0.1373505860458198
+B cell naive	1	-0.02391590033128421
+B cell naive	2	0.07777297418283603
+B cell naive	3	-0.05533151853789799
+B cell plasma	1	0.06901319864144896
+B cell plasma	2	0.025054063852502636
+B cell plasma	3	-0.10901948991825292
+Cancer associated fibroblast	1	0.5323747475297653
+Cancer associated fibroblast	2	-0.35483306095032097
 Cancer associated fibroblast	3	-0.2506874192431696
-Class-switched memory B cell	1	0.426901885918221
-Class-switched memory B cell	2	-0.2657547345245131
-Class-switched memory B cell	3	-0.2212472221389646
-Common lymphoid progenitor	1	-0.48428889787861595
-Common lymphoid progenitor	2	0.5228016481618976
-Common lymphoid progenitor	3	0.01262723671603523
-Common myeloid progenitor	1	0.05211915261614841
-Common myeloid progenitor	2	-0.04811215017220702
-Common myeloid progenitor	3	-0.0101382711967749
-Endothelial cell	1	0.08007733454348175
-Endothelial cell	2	-0.048299608822918214
-Endothelial cell	3	-0.04317050548404911
-Eosinophil	1	0.44922495437545445
-Eosinophil	2	-0.28539180230421946
-Eosinophil	3	-0.2266339568162692
-Granulocyte-monocyte progenitor	1	-0.05203254931864891
-Granulocyte-monocyte progenitor	2	0.08931261365019606
-Granulocyte-monocyte progenitor	3	-0.03433707412684151
-Hematopoietic stem cell	1	-0.3586506923471374
-Hematopoietic stem cell	2	-0.14948872578412525
-Hematopoietic stem cell	3	0.5873286251864442
-immune score	1	0.15190002117529844
-immune score	2	0.21812848526041065
-immune score	3	-0.4154865591423054
-Macrophage	1	-0.04496334087556471
+Class-switched memory B cell	1	0.42690188591822115
+Class-switched memory B cell	2	-0.2657547345245132
+Class-switched memory B cell	3	-0.22124722213896475
+Common lymphoid progenitor	1	-0.4842888978786161
+Common lymphoid progenitor	2	0.5228016481618974
+Common lymphoid progenitor	3	0.012627236716035233
+Common myeloid progenitor	1	0.0521191526161482
+Common myeloid progenitor	2	-0.04811215017220667
+Common myeloid progenitor	3	-0.010138271196774969
+Endothelial cell	1	0.0800773345434818
+Endothelial cell	2	-0.04829960882291817
+Endothelial cell	3	-0.043170505484049077
+Eosinophil	1	0.4492249543754547
+Eosinophil	2	-0.2853918023042196
+Eosinophil	3	-0.2266339568162691
+Granulocyte-monocyte progenitor	1	-0.05203254931864869
+Granulocyte-monocyte progenitor	2	0.0893126136501959
+Granulocyte-monocyte progenitor	3	-0.03433707412684136
+Hematopoietic stem cell	1	-0.3586506923471375
+Hematopoietic stem cell	2	-0.1494887257841253
+Hematopoietic stem cell	3	0.5873286251864445
+immune score	1	0.1519000211752987
+immune score	2	0.21812848526041062
+immune score	3	-0.41548655914230564
+Macrophage	1	-0.044963340875564535
 Macrophage	2	0.3046760748939321
-Macrophage	3	-0.2746841360409674
-Macrophage M1	1	0.11520672900952039
+Macrophage	3	-0.27468413604096736
+Macrophage M1	1	0.11520672900952042
 Macrophage M1	2	0.2601318560375451
-Macrophage M1	3	-0.417106056152013
-Macrophage M2	1	-0.1589777101008437
+Macrophage M1	3	-0.4171060561520129
+Macrophage M2	1	-0.15897771010084374
 Macrophage M2	2	0.21904727614939173
-Macrophage M2	3	-0.04693312331550531
-Mast cell	1	0.36467723376855815
-Mast cell	2	-0.1308024006895016
-Mast cell	3	-0.2926222831496993
-microenvironment score	1	0.3814819878661407
-microenvironment score	2	-0.015760332824340785
-microenvironment score	3	-0.4364971462931279
-Monocyte	1	0.10789096314157384
+Macrophage M2	3	-0.04693312331550524
+Mast cell	1	0.3646772337685594
+Mast cell	2	-0.13080240068950183
+Mast cell	3	-0.29262228314970046
+microenvironment score	1	0.38148198786614124
+microenvironment score	2	-0.01576033282434079
+microenvironment score	3	-0.4364971462931281
+Monocyte	1	0.10789096314157397
 Monocyte	2	0.2610241731682856
-Monocyte	3	-0.4093707587252228
-Myeloid dendritic cell	1	-0.02646022018212585
-Myeloid dendritic cell	2	0.09308117199646344
-Myeloid dendritic cell	3	-0.06879380752777474
-Myeloid dendritic cell activated	1	0.09963737602670279
-Myeloid dendritic cell activated	2	0.21598471476729147
+Monocyte	3	-0.409370758725223
+Myeloid dendritic cell	1	-0.02646022018212581
+Myeloid dendritic cell	2	0.0930811719964636
+Myeloid dendritic cell	3	-0.06879380752777473
+Myeloid dendritic cell activated	1	0.09963737602670278
+Myeloid dendritic cell activated	2	0.21598471476729142
 Myeloid dendritic cell activated	3	-0.3510527003958551
-Neutrophil	1	0.04309349702068413
-Neutrophil	2	-0.023344447593309378
-Neutrophil	3	-0.026083913967140757
-NK cell	1	-0.024551867656100894
-NK cell	2	-0.03349920641541171
-NK cell	3	0.06526324952648935
-Plasmacytoid dendritic cell	1	0.006171625192967858
-Plasmacytoid dendritic cell	2	0.11369243789725694
-Plasmacytoid dendritic cell	3	-0.1297816386727641
-stroma score	1	0.48888424129028013
-stroma score	2	-0.3263652895123558
-stroma score	3	-0.2296493347097564
-T cell CD4+ (non-regulatory)	1	-0.013454657035970017
-T cell CD4+ (non-regulatory)	2	-0.045388221543425006
-T cell CD4+ (non-regulatory)	3	0.06487622737114046
-T cell CD4+ central memory	1	0.31930694304212126
-T cell CD4+ central memory	2	-0.21404004549190714
-T cell CD4+ central memory	3	-0.1490443051456233
-T cell CD4+ effector memory	1	-0.08784251199205123
-T cell CD4+ effector memory	2	0.3073031672003627
-T cell CD4+ effector memory	3	-0.22654265280163768
-T cell CD4+ memory	1	-0.27653455873359567
-T cell CD4+ memory	2	0.44990568407251896
-T cell CD4+ memory	3	-0.1558240171270589
-T cell CD4+ naive	1	0.124266475407436
-T cell CD4+ naive	2	0.08769615152634828
-T cell CD4+ naive	3	-0.2421642910573091
-T cell CD4+ Th1	1	-0.2793356643887387
-T cell CD4+ Th1	2	0.2590987312341778
-T cell CD4+ Th1	3	0.05300245366640447
-T cell CD4+ Th2	1	-0.2453683644998893
-T cell CD4+ Th2	2	0.2509748560080209
-T cell CD4+ Th2	3	0.021374554892760352
-T cell CD8+	1	-0.05031720864755007
-T cell CD8+	2	0.06722209812026818
-T cell CD8+	3	-0.012584896757123787
-T cell CD8+ central memory	1	-0.06922928326249872
-T cell CD8+ central memory	2	0.08601786073005326
-T cell CD8+ central memory	3	-0.010346763563891127
-T cell CD8+ effector memory	1	0.05245080788234164
-T cell CD8+ effector memory	2	0.00862286152361959
-T cell CD8+ effector memory	3	-0.07163543178932531
-T cell CD8+ naive	1	-0.4575163071863969
+Neutrophil	1	0.043093497020683894
+Neutrophil	2	-0.02334444759330944
+Neutrophil	3	-0.02608391396714085
+NK cell	1	-0.04463024978323916
+NK cell	2	-0.05433522344587925
+NK cell	3	0.11157072802524456
+Plasmacytoid dendritic cell	1	0.00617162519296782
+Plasmacytoid dendritic cell	2	0.11369243789725686
+Plasmacytoid dendritic cell	3	-0.12978163867276385
+stroma score	1	0.48888424129027985
+stroma score	2	-0.32636528951235577
+stroma score	3	-0.22964933470975632
+T cell CD4+ (non-regulatory)	1	-0.01345465703596986
+T cell CD4+ (non-regulatory)	2	-0.04538822154342494
+T cell CD4+ (non-regulatory)	3	0.06487622737114039
+T cell CD4+ central memory	1	0.3193069430421211
+T cell CD4+ central memory	2	-0.214040045491907
+T cell CD4+ central memory	3	-0.14904430514562358
+T cell CD4+ effector memory	1	-0.08784251199205148
+T cell CD4+ effector memory	2	0.30730316720036155
+T cell CD4+ effector memory	3	-0.22654265280163619
+T cell CD4+ memory	1	-0.276534558733595
+T cell CD4+ memory	2	0.449905684072518
+T cell CD4+ memory	3	-0.1558240171270584
+T cell CD4+ naive	1	0.12426647540743575
+T cell CD4+ naive	2	0.0876961515263486
+T cell CD4+ naive	3	-0.24216429105730927
+T cell CD4+ Th1	1	-0.2793356643887388
+T cell CD4+ Th1	2	0.259098731234178
+T cell CD4+ Th1	3	0.05300245366640445
+T cell CD4+ Th2	1	-0.24536836449988933
+T cell CD4+ Th2	2	0.25097485600802094
+T cell CD4+ Th2	3	0.021374554892760432
+T cell CD8+	1	-0.050317208647549974
+T cell CD8+	2	0.06722209812026801
+T cell CD8+	3	-0.012584896757123735
+T cell CD8+ central memory	1	-0.06922928326249857
+T cell CD8+ central memory	2	0.08601786073005285
+T cell CD8+ central memory	3	-0.010346763563891116
+T cell CD8+ effector memory	1	0.05245080788234172
+T cell CD8+ effector memory	2	0.008622861523619482
+T cell CD8+ effector memory	3	-0.07163543178932505
+T cell CD8+ naive	1	-0.45751630718639746
 T cell CD8+ naive	2	0.3088575880998829
-T cell CD8+ naive	3	0.21121759075556643
-T cell gamma delta	1	-0.08266282945609225
-T cell gamma delta	2	0.1835445166621016
+T cell CD8+ naive	3	0.21121759075556706
+T cell gamma delta	1	-0.0826628294560949
+T cell gamma delta	2	0.1835445166621044
 T cell gamma delta	3	-0.0994132198067409
-T cell NK	1	0.29130043247495485
-T cell NK	2	-0.04635610256771458
-T cell NK	3	-0.2963463034380961
-T cell regulatory (Tregs)	1	0.22130501949902784
-T cell regulatory (Tregs)	2	-0.3348007694216132
-T cell regulatory (Tregs)	3	0.09750923645888579
+T cell NK	1	0.2913004324749551
+T cell NK	2	-0.046356102567714476
+T cell NK	3	-0.2963463034380964
+T cell regulatory (Tregs)	1	0.22130501949902834
+T cell regulatory (Tregs)	2	-0.33480076942161374
+T cell regulatory (Tregs)	3	0.09750923645888572
