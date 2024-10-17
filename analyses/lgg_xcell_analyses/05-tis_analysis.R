@@ -78,6 +78,20 @@ tis_cluster_annotated$cluster_assigned <- factor(tis_cluster_annotated$cluster_a
 # write output
 write_tsv(tis_cluster_annotated, file = file.path(output_dir, "TIS_scores.tsv"))
 
+# summary stats for clusters vs TIS scores violin plot
+tis_cluster_annotated %>%
+  group_by(cluster_assigned) %>%
+  mutate(iqr = boxplot.stats(score_avg)$stats[4] - boxplot.stats(score_avg)$stats[2]) %>%
+  summarise(min_value = min(score_avg),
+            max_value = max(score_avg),
+            lower_whisker = boxplot.stats(score_avg)$stats[2] - 1.5 * iqr,
+            upper_whisker = boxplot.stats(score_avg)$stats[4] + 1.5 * iqr,
+            median_value = median(score_avg),
+            lower_quartile_q1 = quantile(score_avg)[2],
+            upper_quartile_q3 = quantile(score_avg)[4]) %>%
+  unique() %>%
+  write_tsv(file = file.path(output_dir, "xcell_clusters_vs_TIS_stats.tsv"))
+
 # 1) output violin plot of tis average scores
 my_comparisons <- list(c("1", "2"), c("1", "3"), c("2", "3"))
 pdf(file.path(plots_dir, "TIS_cluster_avg_violinplot.pdf"))
