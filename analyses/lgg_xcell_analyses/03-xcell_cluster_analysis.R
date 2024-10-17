@@ -222,6 +222,21 @@ tmb_df <- histology_RNA %>%
 # write data for reproducibility
 write_tsv(tmb_df, file = file.path(output_dir, "xcell_clusters_vs_tmb.tsv"))
 
+# summary stats for xcell clusters vs TMB violin plot
+tmb_df %>%
+  mutate(tmb = log(tmb + 1)) %>%
+  group_by(cluster_assigned) %>%
+  mutate(iqr = boxplot.stats(tmb)$stats[4] - boxplot.stats(tmb)$stats[2]) %>%
+  summarise(min_value = min(tmb),
+            max_value = max(tmb),
+            lower_whisker = boxplot.stats(tmb)$stats[2] - 1.5 * iqr,
+            upper_whisker = boxplot.stats(tmb)$stats[4] + 1.5 * iqr,
+            median_value = median(tmb),
+            lower_quartile_q1 = quantile(tmb)[2],
+            upper_quartile_q3 = quantile(tmb)[4]) %>%
+  unique() %>%
+  write_tsv(file = file.path(output_dir, "xcell_clusters_vs_tmb_stats.tsv"))
+
 # 1) output violin plot of TMB per cluster
 my_comparisons <- list(c("1", "2"), c("1", "3"), c("2", "3"))
 pdf(file.path(plots_dir, "xcell_clusters_vs_tmb.pdf"))
