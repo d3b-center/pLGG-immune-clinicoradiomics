@@ -1,4 +1,4 @@
-# pLGG Radioimmunomics, Clinicoradiomics
+# pLGG Radioimmunomics and Clinicoradiomics
 This code repository includes the data and source codes used in the manuscript "Multiparametric MRI Along with Machine Learning Informs on Molecular Underpinnings, Prognosis, and Treatment Response In Pediatric Low-Grade Glioma"
 
 ## Software Requirements
