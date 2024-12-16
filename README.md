@@ -15,17 +15,19 @@ This code repository includes the data and source codes used in the manuscript "
 
 
 ## MRI Pre-processing and Tumor Segmentation:
-- Required MRI sequences: T1, T1CE, T2, FLAIR (ADC optional)
-- Pre-processing using BraTS Pre-processing Pipeline, details explained in: https://cbica.github.io/CaPTk/preprocessing_brats.html
-- Tumor Segmentation, all details provided in: https://github.com/d3b-center/peds-brain-auto-seg-public
-- Skull-stripping to generate a brain mask: https://github.com/d3b-center/peds-brain-auto-skull-strip
-- Image normalization:
+1 - Required MRI sequences: T1, T1CE, T2, FLAIR (ADC optional)
+2 - Pre-processing using BraTS Pre-processing Pipeline, details explained in: https://cbica.github.io/CaPTk/preprocessing_brats.html
+3 - Tumor Segmentation, all details provided in: https://github.com/d3b-center/peds-brain-auto-seg-public
+4 - Skull-stripping to generate a brain mask: https://github.com/d3b-center/peds-brain-auto-skull-strip
+5 - Image normalization:
    - run_rescale.py
-- Whole tumor generation:
+6 - Whole tumor generation:
    - run_wtmask.py
-- Radiomic feature extraction, using CaPTk v1.8.1: https://cbica.github.io/CaPTk/ht_FeatureExtraction.html;
+7 - Radiomic feature extraction, using CaPTk v1.8.1: https://cbica.github.io/CaPTk/ht_FeatureExtraction.html;
   - parameter file for radiomic feature extraction: radiomic_feature_params_20230725.csv
   - sample batch file: SampleBatchFile.csv
+
+Steps 1-7 can be done by using the docker files provided at our GitHub repository: https://github.com/d3b-center/peds-brain-seg-pipeline-public. Portions of the code are adapted from "CaPTk" (https://cbica.github.io/CaPTk), licensed under CBICA Software License - https://www.med.upenn.edu/cbica/software-agreement.html. We have retained the original license information and copyright statements in the source files where this code is used. The original code can be accessed at https://cbica.github.io/CaPTk.
 
 ## Immune Profiling:
 - analyses/lgg_xcell_analyses
