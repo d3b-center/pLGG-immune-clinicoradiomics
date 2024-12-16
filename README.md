@@ -1,5 +1,5 @@
 # pLGG Radioimmunomics and Clinicoradiomics
-This code repository includes the data and source codes used in the manuscript "Multiparametric MRI Along with Machine Learning Informs on Molecular Underpinnings, Prognosis, and Treatment Response In Pediatric Low-Grade Glioma"
+This code repository includes the data and source codes used in the manuscript "Multiparametric MRI Along with Machine Learning Predicts Prognosis and Treatment Response in Pediatric Low-Grade Glioma"
 
 ## Software Requirements
 - CaPTk, v1.8.1 (https://cbica.github.io/CaPTk/)
